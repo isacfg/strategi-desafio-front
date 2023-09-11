@@ -116,12 +116,6 @@ export default {
   height: 30px;
 }
 
-.transition-custom {
-  transition-property: all;
-  transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 .menu-item-p:active {
   color: #00ad45;
   background-color: transparent;
