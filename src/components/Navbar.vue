@@ -61,7 +61,9 @@
         </div>
       </div>
       <!-- Page content here -->
-      <slot> </slot>
+      <div class="mx-auto container">
+        <slot> </slot>
+      </div>
     </div>
     <div class="drawer-side">
       <label for="my-drawer-3" class="drawer-overlay"></label>

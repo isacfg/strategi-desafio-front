@@ -11,17 +11,27 @@
       <CategoriaSelect type="Tent" name="Ar livre" />
       <CategoriaSelect type="Tiny home" name="Kitnet" />
     </div>
+
+    <!-- filter and serach -->
+    <div></div>
+
+    <!-- array cards -->
+    <div class="mt-24">
+      <ImovelCard />
+    </div>
   </Navbar>
 </template>
 
 <script lang="ts">
 import Navbar from '@/components/Navbar.vue'
 import CategoriaSelect from '@/components/CategoriaSelect.vue'
+import ImovelCard from '@/components/ImovelCard.vue'
 export default {
   name: 'HomeView',
   components: {
     Navbar,
-    CategoriaSelect
+    CategoriaSelect,
+    ImovelCard
   }
 }
 </script>
