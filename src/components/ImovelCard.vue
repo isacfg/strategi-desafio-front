@@ -1,21 +1,56 @@
 <template>
   <div class="card card-w card-compact w-96 bg-white">
-    <figure><img src="../assets/login/login.jpg" alt="Shoes" /></figure>
-    <div class="card-body">
-      <div class="badge badge-ghost rounded-full">Castelo</div>
+    <figure class="">
+      <!-- <img
+        class="card-img rounded-2xl "
+        :src="hovering ? '../assets/login/login2.jpg' : '../assets/login/login.jpg'"
+        @mouseover="hovering = true"
+        @mouseout="hovering = false"
+      /> -->
+      <img class="card-img rounded-2xl" src="../assets/login/login.jpg" alt="" srcset="" />
+    </figure>
+    <div class="card-body cursor-pointer">
+      <div class="badge badge-ghost p-3 rounded-full">Castelo</div>
       <div class="flex items-center justify-between">
-        <div>
-          <h2 class="card-title truncate-p text-black">{{ truncateTitle(cardTitle, 20) }}</h2>
-        </div>
+        <h2 class="card-title mb-0 truncate-p text-base font-semibold text-black">
+          {{ truncateTitle(cardTitle, 25) }}
+        </h2>
         <div class="rating-p flex items-center pl-4">
           <img class="star" src="../assets/icons-cards/star.png" alt="" />
           <p class="font-poppins text-sm font-medium text-black">4.73</p>
         </div>
       </div>
 
-      <p>If a dog chews shoes whose shoes does he choose?</p>
-      <div class="card-actions justify-end">
-        <button class="btn btn-primary">Buy Now</button>
+      <p class="text-sm sub-card">{{ truncateTitle(cardAdress, 35) }}</p>
+
+      <div class="bottom-card flex items-center mt-4 justify-between">
+        <div class="badge py-4 p-3 rounded-full items-center flex gap-x-4">
+          <div class="flex gap-x-2 items-center">
+            <img class="icon-card" src="../assets/icons-cards/bed.png" alt="" srcset="" />
+            <p>1</p>
+          </div>
+          <div class="flex gap-x-2 items-center">
+            <img class="icon-card" src="../assets/icons-cards/bath.png" alt="" srcset="" />
+            <p>1</p>
+          </div>
+          <div class="flex gap-x-2 items-center">
+            <img class="icon-card-car" src="../assets/icons-cards/car.png" alt="" srcset="" />
+            <p>1</p>
+          </div>
+        </div>
+        <div class="price-right">
+          <p class="font-poppins text-sm font-medium text-black text-end">R$ 1.200.000,00</p>
+          <!-- comissao -->
+          <p class="font-poppins text-sm font-medium text-black text-end">5% - R$ 1.200,00</p>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button
+          class="btn btn-primary btn-block mt-4 bg-greenish rounded-lg text-white border-greenish font-medium hover:bg-green-900 hover:border-green-900 hover:scale-105"
+        >
+          Simular
+        </button>
       </div>
     </div>
   </div>
@@ -28,6 +63,15 @@ export default {
     cardTitle: {
       type: String,
       default: 'Praia Bella Casa quatro banh'
+    },
+    cardAdress: {
+      type: String,
+      default: 'Rua Santa Praia 1920, Natal'
+    }
+  },
+  data() {
+    return {
+      hovering: false
     }
   },
   methods: {
@@ -42,17 +86,50 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .card-w {
   max-width: 325px;
+  // width: 30%;
+  // max-width: 400px;
 }
 
 .truncate-p {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  margin-bottom: 0 !important;
 }
 
+.icon-card {
+  width: 16px;
+  height: 16px;
+}
+
+.icon-card-car {
+  width: 18px;
+  height: 13px;
+}
+
+.sub-card {
+  color: #686868;
+  margin-top: -0.5rem;
+}
+
+.card-img {
+  // width: 325px;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+// .card:hover {
+//   .card-img {
+//     content: url('../assets/login/login2.jpg');
+//   }
+// }
+
+.transition-custom {
+  transition-property: all;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
 .star {
   width: 16px;
   height: 16px;

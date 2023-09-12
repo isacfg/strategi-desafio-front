@@ -31,28 +31,28 @@
             <!-- Navbar menu content here -->
             <li>
               <RouterLink
-                class="font-poppins menu-item-p text-lg text-black font-semibold capitalize hover:text-greenish hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:text-greenish active:text-greenish"
+                class="font-poppins menu-item-p text-base text-black font-medium capitalize hover:text-greenish hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:text-greenish active:text-greenish"
                 to="/"
                 >Imóveis</RouterLink
               >
             </li>
             <li>
               <RouterLink
-                class="font-poppins menu-item-p text-lg text-black font-semibold capitalize hover:text-greenish hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:text-greenish active:text-greenish"
+                class="font-poppins menu-item-p text-base text-black font-medium capitalize hover:text-greenish hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:text-greenish active:text-greenish"
                 to="/"
                 >Simulação</RouterLink
               >
             </li>
             <li>
               <RouterLink
-                class="font-poppins menu-item-p text-lg text-black font-semibold capitalize hover:text-greenish hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:text-greenish active:text-greenish"
+                class="font-poppins menu-item-p text-base text-black font-medium capitalize hover:text-greenish hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:text-greenish active:text-greenish"
                 to="/"
                 >Clientes</RouterLink
               >
             </li>
             <li>
               <RouterLink
-                class="font-poppins menu-item-p text-lg text-black font-semibold capitalize hover:text-greenish hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:text-greenish active:text-greenish"
+                class="font-poppins menu-item-p text-base text-black font-medium capitalize hover:text-greenish hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:text-greenish active:text-greenish"
                 to="/"
                 >Vendas</RouterLink
               >
