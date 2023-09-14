@@ -39,14 +39,14 @@
             <li>
               <RouterLink
                 class="font-poppins menu-item-p text-base text-black font-medium capitalize hover:text-greenish hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:text-greenish active:text-greenish"
-                to="/"
+                to="/simulacao"
                 >Simulação</RouterLink
               >
             </li>
             <li>
               <RouterLink
                 class="font-poppins menu-item-p text-base text-black font-medium capitalize hover:text-greenish hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:text-greenish active:text-greenish"
-                to="/"
+                to="/clientes"
                 >Clientes</RouterLink
               >
             </li>
@@ -61,9 +61,10 @@
         </div>
       </div>
       <!-- Page content here -->
-      <div class="mx-auto container">
-        <slot> </slot>
+      <div class="mx-auto container mb-12">
+        <slot class=""> </slot>
       </div>
+      <Footer class="mb-6" />
     </div>
     <div class="drawer-side">
       <label for="my-drawer-3" class="drawer-overlay"></label>
@@ -79,14 +80,14 @@
         <li>
           <RouterLink
             class="font-poppins text-lg text-white font-semibold capitalize hover:text-white hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent menu-item-p focus:text-white active:text-white"
-            to="/"
+            to="/simulacao"
             >Simulação</RouterLink
           >
         </li>
         <li>
           <RouterLink
             class="font-poppins text-lg text-white font-semibold capitalize hover:text-white hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent menu-item-p focus:text-white active:text-white"
-            to="/"
+            to="/clientes"
             >Clientes</RouterLink
           >
         </li>
@@ -104,11 +105,13 @@
 
 <script lang="ts">
 import { RouterLink } from 'vue-router'
+import Footer from '@/components/Footer.vue'
 
 export default {
   name: 'Navbar',
   components: {
-    RouterLink
+    RouterLink,
+    Footer
   }
 }
 </script>

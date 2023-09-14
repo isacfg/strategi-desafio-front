@@ -21,6 +21,22 @@ const router = createRouter({
       path: '/simulacao',
       name: 'simulacao',
       component: () => import('../views/SimulationView.vue')
+    },
+    // {
+    //   path: '/simulacao/:id',
+    //   name: 'simulacao',
+    //   component: () => import('../views/SimulationView.vue')
+    // },
+    {
+      path: '/clientes',
+      name: 'clientes',
+      component: () => import('../views/ClientView.vue')
+    },
+    {
+      // resumo do pedido
+      path: '/resumo',
+      name: 'resumo',
+      component: () => import('../views/OrderSummaryView.vue')
     }
   ]
 })

@@ -1,5 +1,5 @@
 <template>
-  <div class="card card-w card-compact w-96 bg-white">
+  <div class="card card-w card-compact bg-white">
     <figure class="">
       <!-- <img
         class="card-img rounded-2xl "
@@ -39,9 +39,9 @@
           </div>
         </div>
         <div class="price-right">
-          <p class="font-poppins text-sm font-medium text-black text-end">R$ 1.200.000,00</p>
+          <p class="font-poppins text-base font-semibold text-black text-end">R$ 1.200.000,00</p>
           <!-- comissao -->
-          <p class="font-poppins text-sm font-medium text-black text-end">5% - R$ 1.200,00</p>
+          <p class="font-poppins text-sm font-medium dark-grey text-end">Comissão - R$ 1.200,00</p>
         </div>
       </div>
 
@@ -88,7 +88,8 @@ export default {
 
 <style lang="scss" scoped>
 .card-w {
-  max-width: 325px;
+  max-width: 500px;
+  width: 100%;
   // width: 30%;
   // max-width: 400px;
 }
@@ -107,6 +108,9 @@ export default {
   height: 13px;
 }
 
+.dark-grey {
+  color: #686868;
+}
 .sub-card {
   color: #686868;
   margin-top: -0.5rem;

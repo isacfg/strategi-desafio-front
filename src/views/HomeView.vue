@@ -16,7 +16,7 @@
     <div></div>
 
     <!-- array cards -->
-    <div class="mt-24 flex flex-wrap mx-auto w-full gap-12 justify-center">
+    <div class="mt-24 custom-grid mx-auto w-full gap-12">
       <ImovelCard v-for="index in 9" :key="index" />
     </div>
   </Navbar>
@@ -35,3 +35,12 @@ export default {
   }
 }
 </script>
+
+<style>
+/* make responsive */
+.custom-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 6rem;
+}
+</style>
