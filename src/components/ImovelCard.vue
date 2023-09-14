@@ -7,41 +7,45 @@
         @mouseover="hovering = true"
         @mouseout="hovering = false"
       /> -->
-      <img class="card-img rounded-lg" src="../assets/login/login.jpg" alt="" srcset="" />
+      <img class="card-img rounded-lg" :src="imovel.img" alt="" srcset="" />
     </figure>
     <div class="card-body cursor-pointer">
-      <div class="badge badge-ghost p-3 rounded-full">Castelo</div>
+      <div class="badge badge-ghost p-3 rounded-full">{{ imovel.categoria }}</div>
       <div class="flex items-center justify-between">
         <h2 class="card-title mb-0 truncate-p text-base font-semibold text-black">
-          {{ truncateTitle(cardTitle, 25) }}
+          {{ truncateTitle(imovel.nome, 25) }}
         </h2>
         <div class="rating-p flex items-center pl-4">
           <img class="star" src="../assets/icons-cards/star.png" alt="" />
-          <p class="font-poppins text-sm font-medium text-black">4.73</p>
+          <p class="font-poppins text-sm font-medium text-black">{{ imovel.rating }}</p>
         </div>
       </div>
 
-      <p class="text-sm sub-card">{{ truncateTitle(cardAdress, 35) }}</p>
+      <p class="text-sm sub-card">{{ truncateTitle(imovel.adress, 35) }}</p>
 
       <div class="bottom-card flex items-center mt-4 justify-between">
         <div class="badge py-4 p-3 rounded-full items-center flex gap-x-4">
           <div class="flex gap-x-2 items-center">
             <img class="icon-card" src="../assets/icons-cards/bed.png" alt="" srcset="" />
-            <p>1</p>
+            <p>{{ imovel.quartos }}</p>
           </div>
           <div class="flex gap-x-2 items-center">
             <img class="icon-card" src="../assets/icons-cards/bath.png" alt="" srcset="" />
-            <p>1</p>
+            <p>{{ imovel.banheiros }}</p>
           </div>
           <div class="flex gap-x-2 items-center">
             <img class="icon-card-car" src="../assets/icons-cards/car.png" alt="" srcset="" />
-            <p>1</p>
+            <p>{{ imovel.garagem }}</p>
           </div>
         </div>
         <div class="price-right">
-          <p class="font-poppins text-base font-semibold text-black text-end">R$ 1.200.000,00</p>
+          <p class="font-poppins text-base font-semibold text-black text-end">
+            {{ formatPrice(imovel.preco) }}
+          </p>
           <!-- comissao -->
-          <p class="font-poppins text-sm font-medium dark-grey text-end">Comissão - R$ 1.200,00</p>
+          <p class="font-poppins text-sm font-medium dark-grey text-end">
+            {{ calculateComission(imovel.preco) }}
+          </p>
         </div>
       </div>
 
@@ -60,13 +64,8 @@
 export default {
   name: 'ImovelCard',
   props: {
-    cardTitle: {
-      type: String,
-      default: 'Praia Bella Casa quatro banh'
-    },
-    cardAdress: {
-      type: String,
-      default: 'Rua Santa Praia 1920, Natal'
+    imovel: {
+      type: Object
     }
   },
   data() {
@@ -81,6 +80,13 @@ export default {
       } else {
         return title
       }
+    },
+    formatPrice(price: number): string {
+      return `R$ ${price.toLocaleString('pt-BR')}`
+    },
+    calculateComission(price: number): string {
+      const comission = price * 0.05
+      return `Comissão - R$ ${comission.toLocaleString('pt-BR')}`
     }
   }
 }

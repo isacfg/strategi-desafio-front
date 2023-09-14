@@ -39,27 +39,18 @@
       <button
         class="btn-busca btn bg-greenish text-white font-medium max-md:w-full hover:bg-green-900"
       >
-        <!-- <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
-        </svg> -->
         Buscar
       </button>
     </div>
 
     <!-- array cards -->
     <div class="custom-grid mx-auto mt-12 w-full gap-12">
-      <ImovelCard v-for="index in 9" :key="index" />
+      <!-- <ImovelCard v-for="index in 9" :key="index" /> -->
+      <!-- <li v-for="imovel in imoveis.imoveisList" :key="imovel.id">
+        {{ imovel.nome }}
+      </li> -->
+
+      <ImovelCard v-for="imovel in imoveis.imoveisList" :key="imovel.id" :imovel="imovel" />
     </div>
   </Navbar>
 </template>
@@ -68,6 +59,7 @@
 import Navbar from '@/components/Navbar.vue'
 import CategoriaSelect from '@/components/CategoriaSelect.vue'
 import ImovelCard from '@/components/ImovelCard.vue'
+
 export default {
   name: 'HomeView',
   components: {
@@ -76,6 +68,14 @@ export default {
     ImovelCard
   }
 }
+</script>
+
+<script setup lang="ts">
+import { useImoveisStore } from '@/stores/imoveis'
+
+const imoveis = useImoveisStore()
+
+// with autocompletion ✨
 </script>
 
 <style lang="scss">
