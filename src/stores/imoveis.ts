@@ -335,12 +335,5 @@ export const useImoveisStore = defineStore('imoveis', {
       }
     ]
   }),
-  actions: {
-    // getImoveis(): Imovel[] {
-    //   return this.$state.imoveis
-    // },
-    // addImovel(imovel: Imovel): void {
-    //   this.$state.imoveis.push(imovel)
-    // }
-  }
+  actions: {}
 })
