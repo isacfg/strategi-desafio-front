@@ -11,10 +11,10 @@ module.exports = {
       poppins: ['Poppins', 'sans-serif'],
     },
     screns: {
-      sm: { max: '479px' },
-      md: { max: '767px' },
-      lg: { max: '1023px' },
-      xl: { max: '1439px' },
+      sm: { max: '481px' },
+      md: { max: '769px' },
+      lg: { max: '1030px' },
+      xl: { max: '1445px' },
     },
     extend: {
       colors: {
@@ -27,7 +27,7 @@ module.exports = {
       },
     },
   },
-  plugins: [require("daisyui"), 'prettier-plugin-tailwindcss'],
+  plugins: [require("daisyui"),],
   daisyui: {
     themes: ["corporate"],
   },

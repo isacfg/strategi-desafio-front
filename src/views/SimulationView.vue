@@ -2,28 +2,100 @@
   <Navbar>
     <h1 class="text-black text-4xl font-bold mt-20 mb-8">Simulação de pagamento</h1>
 
-    <div class="mx-auto flex gap-x-20">
+    <div class="mx-auto flex gap-x-20 max-lg:flex-col">
       <div>
         <!-- filter -->
         <div></div>
 
-        <div class="flex flex-col gap-y-4">
+        <div class="flex flex-col gap-y-4 max-lg:w-full">
           <img class="house-img rounded-2xl" src="../assets/login/login.jpg" alt="" srcset="" />
           <div class="flex items-center justify-between px-2">
-            <p class="text-black text-xl">Praia Bella Casa quatro quatroquatro banh...</p>
+            <p class="text-black text-xl font-medium">
+              Praia Bella Casa quatro quatroquatro banh...
+            </p>
             <div class="flex items-center gap-x-1">
               <img class="star" src="../assets/icons-cards/star-big.png" alt="" srcset="" />
               <p class="text-xl text-black">4.75</p>
             </div>
           </div>
+
+          <!-- inputs -->
+          <div class="px-2 flex flex-wrap items-center justify-between mt-4">
+            <!-- VALOR IMOVEL -->
+            <div class="w-1/3 max-lg:w-full">
+              <label for="valor" class="block mb-2 text-sm font-medium text-gray-900 text-black"
+                >Colocar outro valor</label
+              >
+
+              <div class="form-control w-full">
+                <div class="input-group w-full">
+                  <input
+                    type="number"
+                    id="valor"
+                    placeholder="R$ 1.200.000,00"
+                    class="base-input input input-bordered w-full max-lg:mb-2"
+                  />
+                </div>
+              </div>
+            </div>
+            <!-- VALOR IMOVEL -->
+
+            <div class="w-1/3 max-lg:w-full">
+              <label for="parcelas" class="block mb-2 text-sm font-medium text-gray-900 text-black"
+                >Quantidade de Parcelas</label
+              >
+
+              <div class="form-control w-full">
+                <div class="input-group w-full">
+                  <input
+                    type="number"
+                    id="parcelas"
+                    placeholder="150"
+                    class="base-input input input-bordered w-full max-lg:mb-2"
+                    min="1"
+                    max="180"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- desconto -->
+            <div class="w-1/5 max-lg:w-full">
+              <label for="desconto" class="block mb-2 text-sm font-medium text-gray-900 text-black"
+                >Desconto (%)</label
+              >
+
+              <div class="form-control w-full">
+                <div class="input-group w-full">
+                  <input
+                    type="number"
+                    id="desconto"
+                    placeholder="0"
+                    class="base-input input input-bordered w-full max-lg:mb-2"
+                    min="0"
+                    max="100"
+                  />
+                </div>
+              </div>
+            </div>
+            <button
+              class="btn mt-8 w-1/3 max-lg:w-full bg-greenish rounded-lg text-white font-medium hover:bg-green-900 hover:scale-105"
+            >
+              Simular
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="w-2/5 flex flex-col gap-y-2">
+      <div class="w-2/5 flex flex-col gap-y-2 max-lg:w-full max-lg:mt-12 max-lg:px-2">
         <h2 class="text-black text-2xl font-semibold mb-2">Detalhes</h2>
         <div class="flex items-center px-3 py-3 rounded-lg w-full justify-between bg-val">
           <p class="text-black">Valor total <span class="val-span">(R$)</span></p>
           <p class="text-black">R$ 1.200.000,00</p>
+        </div>
+        <div class="flex items-center px-3 py-3 rounded-lg w-full justify-between">
+          <p class="text-black">Desconto aplicado <span class="val-span">(0%)</span></p>
+          <p class="text-black">R$ 0</p>
         </div>
         <div class="flex items-center px-3 py-3 rounded-lg w-full justify-between">
           <p class="text-black">Comissão <span class="val-span">(5%)</span></p>
@@ -101,6 +173,21 @@ export default {
   width: 646px;
   height: 275px;
   object-fit: cover;
+}
+
+@media (max-width: 1024px) {
+  .house-img {
+    width: 100%;
+    height: 275px;
+  }
+}
+
+.base-input {
+  border-radius: 8px !important;
+}
+
+.base-input:focus {
+  outline: none !important;
 }
 .val-span {
   color: #777e90;

@@ -61,7 +61,7 @@
         </div>
       </div>
       <!-- Page content here -->
-      <div class="mx-auto container mb-12">
+      <div class="mx-auto container mb-12 px-24 max-lg:px-4">
         <slot class=""> </slot>
       </div>
       <Footer class="mb-6" />

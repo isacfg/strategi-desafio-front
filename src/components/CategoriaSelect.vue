@@ -1,67 +1,85 @@
 <template>
-  <div class="flex flex-col items-center justify-center">
+  <div class="flex flex-col items-center justify-center cursor-pointer">
     <img
       class="hover:bg-greenish p-2 rounded-full transition-custom hover:scale-105"
       v-if="type == 'apartment'"
-      src="../assets/home/apartment.svg"
+      :src="isHover ? '/icons/white/apartment-white.svg' : '/icons/apartment.svg'"
       alt=""
       srcset=""
+      @mouseover="isHover = true"
+      @mouseout="isHover = false"
     />
     <img
       class="hover:bg-greenish p-2 rounded-full transition-custom hover:scale-105"
       v-if="type == 'Castle'"
-      src="../assets/home/Castle.svg"
+      :src="isHover ? '/icons/white/Castle-white.svg' : '/icons/Castle.svg'"
       alt=""
       srcset=""
+      @mouseover="isHover = true"
+      @mouseout="isHover = false"
     />
     <img
       class="hover:bg-greenish p-2 rounded-full transition-custom hover:scale-105"
       v-if="type == 'Farm'"
-      src="../assets/home/Farm.svg"
+      :src="isHover ? '/icons/white/Farm-white.svg' : '/icons/Farm.svg'"
       alt=""
       srcset=""
+      @mouseover="isHover = true"
+      @mouseout="isHover = false"
     />
     <img
       class="hover:bg-greenish p-2 rounded-full transition-custom hover:scale-105"
       v-if="type == 'Campervan'"
-      src="../assets/home/Campervan.svg"
+      :src="isHover ? '/icons/white/Campervan-white.svg' : '/icons/Campervan.svg'"
       alt=""
       srcset=""
+      @mouseover="isHover = true"
+      @mouseout="isHover = false"
     />
     <img
       class="hover:bg-greenish p-2 rounded-full transition-custom hover:scale-105"
       v-if="type == 'Hotel'"
-      src="../assets/home/Hotel.svg"
+      :src="isHover ? '/icons/white/Hotel-white.svg' : '/icons/Hotel.svg'"
       alt=""
       srcset=""
+      @mouseover="isHover = true"
+      @mouseout="isHover = false"
     />
     <img
       class="hover:bg-greenish p-2 rounded-full transition-custom hover:scale-105"
       v-if="type == 'House'"
-      src="../assets/home/House.svg"
+      :src="isHover ? '/icons/white/House-white.svg' : '/icons/House.svg'"
       alt=""
       srcset=""
+      @mouseover="isHover = true"
+      @mouseout="isHover = false"
     />
     <img
       class="hover:bg-greenish p-2 rounded-full transition-custom hover:scale-105"
       v-if="type == 'Tent'"
-      src="../assets/home/Tent.svg"
+      :src="isHover ? '/icons/white/Tent-white.svg' : '/icons/Tent.svg'"
       alt=""
       srcset=""
+      @mouseover="isHover = true"
+      @mouseout="isHover = false"
     />
     <img
       class="hover:bg-greenish p-2 rounded-full transition-custom hover:scale-105"
       v-if="type == 'Tiny home'"
-      src="../assets/home/Tiny home.svg"
+      :src="isHover ? '/icons/white/TinyHome-white.svg' : '/icons/TinyHome.svg'"
       alt=""
       srcset=""
+      @mouseover="isHover = true"
+      @mouseout="isHover = false"
     />
     <img
       class="hover:bg-greenish p-2 rounded-full transition-custom hover:scale-105"
       v-if="type == 'Yurt'"
-      src="../assets/home/Yurt.svg"
+      :src="isHover ? '/icons/white/Yurt-white.svg' : '/icons/Yurt.svg'"
       alt=""
       srcset=""
+      @mouseover="isHover = true"
+      @mouseout="isHover = false"
     />
     <p class="text-base text-black capitalize">{{ name }}</p>
   </div>
@@ -81,7 +99,21 @@ export default {
       required: true,
       default: 'Apartamento'
     }
+  },
+  data() {
+    return {
+      isHover: false
+    }
   }
+  // computed: {
+  //   imageSource() {
+  //     if (this.isHover) {
+  //       return '/icons/white/apartment-white.svg'
+  //     } else {
+  //       return '/icons/apartment.svg'
+  //     }
+  //   }
+  // }
 }
 </script>
 

@@ -35,7 +35,7 @@
         </div>
 
         <div class="w-auto text-black">
-          <img class="cursor-pointer" src="../assets/icons-cards/3 dots.svg" alt="" srcset="" />
+          <img class="cursor-pointer" src="../assets/icons-cards/3dots.svg" alt="" srcset="" />
         </div>
       </div>
     </div>

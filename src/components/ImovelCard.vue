@@ -7,7 +7,7 @@
         @mouseover="hovering = true"
         @mouseout="hovering = false"
       /> -->
-      <img class="card-img rounded-2xl" src="../assets/login/login.jpg" alt="" srcset="" />
+      <img class="card-img rounded-lg" src="../assets/login/login.jpg" alt="" srcset="" />
     </figure>
     <div class="card-body cursor-pointer">
       <div class="badge badge-ghost p-3 rounded-full">Castelo</div>
