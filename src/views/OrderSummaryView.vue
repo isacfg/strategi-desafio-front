@@ -1,6 +1,6 @@
 <template>
   <Navbar>
-    <h1 class="text-black text-4xl font-bold mt-20 mb-8">Resumo do pedido</h1>
+    <h1 class="text-black text-4xl font-bold mt-20 mb-8 px-4">Resumo do pedido</h1>
 
     <div class="mt-12 mx-auto w-full px-4">
       <div class="receipt w-8/12 p-12 mx-auto flex flex-col gap-y-12">
@@ -69,8 +69,8 @@ export default {
 
 <style lang="scss">
 .receipt {
-  border: 2px solid #d9d9d9;
-  border-radius: 30px;
+  border: 2px solid #e0e7eb;
+  border-radius: 15px;
 }
 
 .bottom-row {

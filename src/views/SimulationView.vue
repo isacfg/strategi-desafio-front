@@ -1,11 +1,40 @@
 <template>
   <Navbar>
-    <h1 class="text-black text-4xl font-bold mt-20 mb-8">Simulação de pagamento</h1>
+    <h1 class="text-black text-4xl font-bold mt-20 mb-8 px-4">Simulação de pagamento</h1>
 
     <div class="mx-auto flex gap-x-20 max-lg:flex-col">
       <div>
-        <!-- filter -->
-        <div></div>
+        <!-- search -->
+        <div class="flex flex-wrap justify-between mb-4">
+          <div class="form-control w-4/5 max-lg:w-full">
+            <div class="input-group w-full">
+              <input
+                type="text"
+                placeholder="Buscar Imóvel"
+                class="busca input input-bordered w-full"
+              />
+            </div>
+          </div>
+          <button
+            class="btn-busca btn bg-greenish text-white font-medium max-lg:w-full hover:bg-green-900"
+          >
+            <!-- <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg> -->
+            Buscar
+          </button>
+        </div>
 
         <div class="flex flex-col gap-y-4 max-lg:w-full">
           <img class="house-img rounded-2xl" src="../assets/login/login.jpg" alt="" srcset="" />

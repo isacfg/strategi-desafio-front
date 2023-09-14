@@ -53,7 +53,7 @@
             <li>
               <RouterLink
                 class="font-poppins menu-item-p text-base text-black font-medium capitalize hover:text-greenish hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:text-greenish active:text-greenish"
-                to="/"
+                to="/pedidos"
                 >Vendas</RouterLink
               >
             </li>
@@ -94,7 +94,7 @@
         <li>
           <RouterLink
             class="font-poppins text-lg text-white font-semibold capitalize hover:text-white hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent menu-item-p focus:text-white active:text-white"
-            to="/"
+            to="/pedidos"
             >Vendas</RouterLink
           >
         </li>
