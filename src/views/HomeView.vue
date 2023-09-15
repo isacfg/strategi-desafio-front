@@ -26,6 +26,7 @@
       <div class="form-control max-md:w-full">
         <div class="input-group max-md:w-full">
           <input
+            v-model="search"
             type="text"
             placeholder="Buscar Imóvel"
             class="busca input input-bordered max-md:w-full"
@@ -33,14 +34,16 @@
         </div>
       </div>
       <select
+        v-model="priceOrder"
         class="select select-bordered focus:outline-none sort-by w-full max-md:w-full rounded-lg"
       >
         <option disabled selected>Ordenar por:</option>
-        <option>Menor preço</option>
-        <option>Maior preço</option>
+        <option value="asc">Menor preço</option>
+        <option value="desc">Maior preço</option>
       </select>
 
       <button
+        @click="handleSearch"
         class="btn-busca btn bg-greenish text-white font-medium max-md:w-full hover:bg-green-900"
       >
         Buscar
@@ -83,7 +86,9 @@ export default {
   data() {
     return {
       imoveis: [],
-      shown: 9
+      shown: 9,
+      priceOrder: '',
+      search: ''
     }
   },
 
@@ -100,12 +105,56 @@ export default {
         this.imoveis = res
       })
     },
+
+    // gerenciador de busca (quando aperta o botao)
+    handleSearch() {
+      console.log('price order' + this.priceOrder)
+      console.log('search' + this.search)
+      this.shown = 9
+      if (this.search === '' && this.priceOrder === '') {
+        console.log('campos vazios')
+        this.getImoveis().then((res) => {
+          this.imoveis = res
+        })
+      } else if (this.search !== '' && this.priceOrder === '') {
+        console.log('buscar por nome')
+        this.getImoveisBySearch(this.search).then((res) => {
+          this.imoveis = res
+        })
+      } else if (this.search === '' && this.priceOrder !== '') {
+        console.log('ordenar por preço')
+        this.sortImoveisByPrice(this.priceOrder).then((res) => {
+          this.imoveis = res
+        })
+      } else if (this.search !== '' && this.priceOrder !== '') {
+        console.log('buscar por nome e ordenar por preço')
+        this.getImoveisBySearchAndPrice(this.search, this.priceOrder).then((res) => {
+          this.imoveis = res
+        })
+      }
+
+      this.search = ''
+      this.priceOrder = ''
+    },
+
     async getImoveis() {
       let c = await useImoveisStore().getImoveisFromDB(this.shown)
       return c
     },
     async getImoveisByCategory(category: string) {
-      let c = await useImoveisStore().getImoveisFromDBByCategory(category)
+      let c = await useImoveisStore().getImoveisByCategory(category)
+      return c
+    },
+    async sortImoveisByPrice(order: string) {
+      let c = await useImoveisStore().sortImoveisByPrice(order)
+      return c
+    },
+    async getImoveisBySearch(search: string) {
+      let c = await useImoveisStore().getImoveisByName(search)
+      return c
+    },
+    async getImoveisBySearchAndPrice(search: string, order: string) {
+      let c = await useImoveisStore().getImoveisByName(search)
       return c
     }
   },

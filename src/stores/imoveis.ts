@@ -1,6 +1,6 @@
 // stores/counter.js
 import { defineStore } from 'pinia'
-import { collection, getFirestore, getDocs, query, limit, where } from 'firebase/firestore'
+import { collection, getFirestore, getDocs, query, limit, where, orderBy } from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
 
@@ -77,13 +77,13 @@ export const useImoveisStore = defineStore('imoveis', {
           localImoveisList.push(doc.data())
         })
         this.imoveisList = localImoveisList
-        return localImoveisList
+        return this.imoveisList
       } catch (error) {
         console.log(error)
       }
     },
 
-    async getImoveisFromDBByCategory(category: string) {
+    async getImoveisByCategory(category: string) {
       try {
         const q = query(collection(db, 'imoveis'), where('categoria', '==', category))
         const querySnapshot = await getDocs(q)
@@ -92,29 +92,56 @@ export const useImoveisStore = defineStore('imoveis', {
           localImoveisList.push(doc.data())
         })
         this.imoveisList = localImoveisList
-        return localImoveisList
+        return this.imoveisList
       } catch (error) {
         console.log(error)
       }
-    }
+    },
 
-    // // get imoveis by category
-    // // get imoveis by name
-    // // orderby menor e maior preço
+    async sortImoveisByPrice(order: string) {
+      try {
+        const q = query(collection(db, 'imoveis'), orderBy('preco', order))
+        const querySnapshot = await getDocs(q)
+        let localImoveisList = []
+        querySnapshot.forEach((doc) => {
+          localImoveisList.push(doc.data())
+        })
+        this.imoveisList = localImoveisList
+        return this.imoveisList
+      } catch (error) {
+        console.log(error)
+      }
+    },
 
-    // getImoveisFromDBByCategory(category: string) {
-    //   const imoveisRef = collection(db, 'imoveis')
-    //   const imoveisQuery = query(imoveisRef, where('categoria', '==', category))
-    //   getDocs(imoveisQuery).then((querySnapshot) => {
+    // tentando fazer include funcionar
+    // async getImoveisByName(name: string) {
+    //   try {
+    //     const q = query(collection(db, 'imoveis'), where('nome', 'array-contains', [name]))
+    //     const querySnapshot = await getDocs(q)
     //     let localImoveisList = []
     //     querySnapshot.forEach((doc) => {
     //       localImoveisList.push(doc.data())
     //     })
     //     this.imoveisList = localImoveisList
-    //     console.log(`Imoveis list loaded from Firebase for category ${category}`)
-    //     console.log(localImoveisList)
-    //     return localImoveisList
-    //   })
+    //     return this.imoveisList
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
     // }
+
+    async getImoveisByName(name: string) {
+      try {
+        const q = query(collection(db, 'imoveis'), where('nome', '==', name))
+        const querySnapshot = await getDocs(q)
+        let localImoveisList = []
+        querySnapshot.forEach((doc) => {
+          localImoveisList.push(doc.data())
+        })
+        this.imoveisList = localImoveisList
+        return this.imoveisList
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 })

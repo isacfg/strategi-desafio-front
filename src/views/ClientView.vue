@@ -9,21 +9,23 @@
         <div class="form-control max-md:w-full">
           <div class="input-group max-md:w-full">
             <input
+              v-model="cpfSearch"
               type="text"
-              placeholder="Buscar Cliente"
+              placeholder="Buscar cliente por CPF"
               class="busca input input-bordered max-md:w-full"
             />
           </div>
         </div>
-        <select
+        <!-- <select
+          v-model="sortBy"
           class="select select-bordered focus:outline-none sort-by w-full max-md:w-full rounded-lg"
         >
           <option disabled selected>Ordenar por:</option>
-          <option>Nome</option>
           <option>Data Crescente</option>
           <option>Data Decrescente</option>
-        </select>
+        </select> -->
         <button
+          @click="handleSearch"
           class="btn-busca btn bg-greenish text-white font-medium max-md:w-full hover:bg-green-900"
         >
           Buscar
@@ -52,21 +54,21 @@
 
       <!-- row body -->
       <div
-        v-for="index in 6"
-        :key="index"
+        v-for="cliente in clientes"
+        :key="cliente.id"
         class="flex tab-child transition-custom items-center p-4 max-sm:gap-x-2 cursor-pointer"
       >
         <div class="flex items-center w-1/3 overflow-hidden text-black gap-x-2">
           <img src="../assets/placeholder-imgs.png" alt="" srcset="" />
-          <p class="max-sm:text-sm">Tony Stark</p>
+          <p class="max-sm:text-sm">{{ cliente.nome }}</p>
         </div>
 
         <div class="w-1/3 overflow-hidden text-black">
-          <p class="max-sm:text-sm">email@gmail.com</p>
+          <p class="max-sm:text-sm">{{ cliente.email }}</p>
         </div>
 
         <div class="w-1/3 overflow-hidden text-black">
-          <p class="max-sm:text-sm">09/06/2003</p>
+          <p class="max-sm:text-sm">{{ cliente.dataCadastro }}</p>
         </div>
 
         <div class="w-auto text-black">
@@ -79,10 +81,54 @@
 
 <script lang="ts">
 import Navbar from '@/components/Navbar.vue'
+
+import { useClientesStore } from '@/stores/clientes'
+
 export default {
   name: 'ClienteView',
   components: {
     Navbar
+  },
+  data() {
+    return {
+      clientes: [],
+      shown: 9,
+      cpfSearch: '',
+      sortBy: ''
+    }
+  },
+
+  methods: {
+    verMais() {
+      this.shown += 9
+    },
+
+    handleSearch() {
+      console.log('handle search')
+      console.log(this.cpfSearch + 'cpf')
+
+      this.getClientesByCpf().then((res) => {
+        this.clientes = res
+      })
+    },
+
+    async getClientes() {
+      let res = await useClientesStore().getClientesFromDB(this.shown)
+      return res
+    },
+
+    async getClientesByCpf() {
+      // remover pontuacao e espaços do cpf
+      this.cpfSearch = this.cpfSearch.replace(/\D/g, '')
+      let res = await useClientesStore().getClienteByCPF(this.cpfSearch)
+      return res
+    }
+  },
+
+  mounted() {
+    this.getClientes().then((res) => {
+      this.clientes = res
+    })
   }
 }
 </script>
