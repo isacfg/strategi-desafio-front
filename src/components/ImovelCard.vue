@@ -9,7 +9,7 @@
       /> -->
       <img class="card-img rounded-lg" :src="imovel.img" alt="" srcset="" />
     </figure>
-    <div class="card-body cursor-pointer">
+    <div class="card-body max-md:px-1 cursor-pointer">
       <div class="badge badge-ghost p-3 rounded-full">{{ imovel.categoria }}</div>
       <div class="flex items-center justify-between">
         <h2 class="card-title mb-0 truncate-p text-base font-semibold text-black">

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center cursor-pointer">
+  <div @click="handleClick" class="flex flex-col items-center justify-center cursor-pointer">
     <img
       class="hover:bg-greenish p-2 rounded-full transition-custom hover:scale-105"
       v-if="type == 'apartment'"
@@ -103,6 +103,12 @@ export default {
   data() {
     return {
       isHover: false
+    }
+  },
+  methods: {
+    handleClick() {
+      this.$emit('categoria-select', this.name)
+      console.log(this.name)
     }
   }
   // computed: {

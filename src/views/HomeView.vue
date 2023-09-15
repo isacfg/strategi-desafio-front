@@ -4,14 +4,18 @@
     <div
       class="mt-16 flex flex-row flex-wrap items-center justify-between gap-12 max-lg max-lg:gap-4 max-lg:justify-around"
     >
-      <CategoriaSelect type="apartment" name="Apartamento" />
-      <CategoriaSelect type="Castle" name="Castelo" />
-      <CategoriaSelect type="Farm" name="Rural" />
-      <CategoriaSelect type="Campervan" name="Trailers" />
-      <CategoriaSelect type="Hotel" name="Hotel" />
-      <CategoriaSelect type="House" name="Casa" />
-      <CategoriaSelect type="Tent" name="Ar livre" />
-      <CategoriaSelect type="Tiny home" name="Kitnet" />
+      <CategoriaSelect
+        type="apartment"
+        name="Apartamento"
+        @categoria-select="handleCategoriaSelect"
+      />
+      <CategoriaSelect type="Castle" name="Castelo" @categoria-select="handleCategoriaSelect" />
+      <CategoriaSelect type="Farm" name="Rural" @categoria-select="handleCategoriaSelect" />
+      <CategoriaSelect type="Campervan" name="Trailers" @categoria-select="handleCategoriaSelect" />
+      <CategoriaSelect type="Hotel" name="Hotel" @categoria-select="handleCategoriaSelect" />
+      <CategoriaSelect type="House" name="Casa" @categoria-select="handleCategoriaSelect" />
+      <CategoriaSelect type="Tent" name="Ar livre" @categoria-select="handleCategoriaSelect" />
+      <CategoriaSelect type="Tiny home" name="Kitnet" @categoria-select="handleCategoriaSelect" />
     </div>
 
     <!-- filter and serach -->
@@ -50,7 +54,14 @@
         {{ imovel.nome }}
       </li> -->
 
-      <ImovelCard v-for="imovel in imoveis.imoveisList" :key="imovel.id" :imovel="imovel" />
+      <ImovelCard v-for="imovel in imoveis" :key="imovel.id" :imovel="imovel" />
+    </div>
+
+    <!-- ver mais imoveis -->
+    <div class="flex items-center justify-center mt-12">
+      <button @click="verMais" class="btn rounded-lg bg-greenish text-white hover:bg-emerald-700">
+        Ver mais imóveis
+      </button>
     </div>
   </Navbar>
 </template>
@@ -60,22 +71,52 @@ import Navbar from '@/components/Navbar.vue'
 import CategoriaSelect from '@/components/CategoriaSelect.vue'
 import ImovelCard from '@/components/ImovelCard.vue'
 
+import { useImoveisStore } from '@/stores/imoveis'
+
 export default {
   name: 'HomeView',
   components: {
     Navbar,
     CategoriaSelect,
     ImovelCard
+  },
+  data() {
+    return {
+      imoveis: [],
+      shown: 9
+    }
+  },
+
+  methods: {
+    verMais() {
+      this.shown += 9
+      this.getImoveis().then((res) => {
+        this.imoveis = res
+      })
+    },
+    handleCategoriaSelect(category: string) {
+      console.log(`Categoria selecionada: ${category}`)
+      this.getImoveisByCategory(category).then((res) => {
+        this.imoveis = res
+      })
+    },
+    async getImoveis() {
+      let c = await useImoveisStore().getImoveisFromDB(this.shown)
+      return c
+    },
+    async getImoveisByCategory(category: string) {
+      let c = await useImoveisStore().getImoveisFromDBByCategory(category)
+      return c
+    }
+  },
+
+  mounted() {
+    this.getImoveis().then((res) => {
+      this.imoveis = res
+      console.log(this.imoveis)
+    })
   }
 }
-</script>
-
-<script setup lang="ts">
-import { useImoveisStore } from '@/stores/imoveis'
-
-const imoveis = useImoveisStore()
-
-// with autocompletion ✨
 </script>
 
 <style lang="scss">
