@@ -99,17 +99,32 @@ export const useImoveisStore = defineStore('imoveis', {
     },
 
     async sortImoveisByPrice(order: string) {
-      try {
-        const q = query(collection(db, 'imoveis'), orderBy('preco', order))
-        const querySnapshot = await getDocs(q)
-        let localImoveisList = []
-        querySnapshot.forEach((doc) => {
-          localImoveisList.push(doc.data())
-        })
-        this.imoveisList = localImoveisList
-        return this.imoveisList
-      } catch (error) {
-        console.log(error)
+      if (order === 'asc') {
+        try {
+          const q = query(collection(db, 'imoveis'), orderBy('preco', 'asc'))
+          const querySnapshot = await getDocs(q)
+          let localImoveisList = []
+          querySnapshot.forEach((doc) => {
+            localImoveisList.push(doc.data())
+          })
+          this.imoveisList = localImoveisList
+          return this.imoveisList
+        } catch (error) {
+          console.log(error)
+        }
+      } else if (order === 'desc') {
+        try {
+          const q = query(collection(db, 'imoveis'), orderBy('preco', 'desc'))
+          const querySnapshot = await getDocs(q)
+          let localImoveisList = []
+          querySnapshot.forEach((doc) => {
+            localImoveisList.push(doc.data())
+          })
+          this.imoveisList = localImoveisList
+          return this.imoveisList
+        } catch (error) {
+          console.log(error)
+        }
       }
     },
 

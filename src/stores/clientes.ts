@@ -1,6 +1,15 @@
 // stores/counter.js
 import { defineStore } from 'pinia'
-import { collection, getFirestore, getDocs, query, limit, where, orderBy } from 'firebase/firestore'
+import {
+  collection,
+  getFirestore,
+  getDocs,
+  query,
+  limit,
+  where,
+  orderBy,
+  addDoc
+} from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
 
