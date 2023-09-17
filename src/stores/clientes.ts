@@ -8,7 +8,10 @@ import {
   limit,
   where,
   orderBy,
-  addDoc
+  addDoc,
+  deleteDoc,
+  doc,
+  updateDoc
 } from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
@@ -28,14 +31,15 @@ const firebaseApp = initializeApp(firebaseConfig)
 const analytics = getAnalytics(firebaseApp)
 
 const db = getFirestore()
+const clientsCollection = collection(db, 'clientes')
 
 interface Cliente {
-  id: number
+  id?: number
   nome: string
   cpf: string
   email: string
-  dataCadastro: string
-  foto: any
+  dataCadastro: any
+  foto?: any
 }
 
 interface ClientesState {
@@ -108,7 +112,7 @@ export const useClientesStore = defineStore('clientes', {
       }
     },
 
-    async addCliente(cliente: Cliente) {
+    async addClienteToDB(cliente: Cliente) {
       try {
         const q = query(collection(db, 'clientes'), where('cpf', '==', cliente.cpf))
         const querySnapshot = await getDocs(q)
@@ -124,6 +128,86 @@ export const useClientesStore = defineStore('clientes', {
         }
       } catch (e) {
         console.error(e)
+        return false
+      }
+    },
+
+    // deletar cliente
+    //  async deleteUser() {
+    //   console.log('deleteUser')
+    //   try {
+    //     if (this.isModalOpen) {
+    //       await deleteDoc(doc(projectsCollection, this.id))
+    //       this.isModalOpen = !this.isModalOpen
+
+    //       // Updating the store
+    //       getDocs(projectsCollection)
+    //         .then((snapshot) => {
+    //           let projects = []
+    //           snapshot.forEach((doc) => {
+    //             projects.push({ ...doc.data(), id: doc.id })
+    //           })
+    //           // Push data to store
+    //           useProjectsStore().setProjects(projects)
+    //           // console.log(projects)
+    //         })
+    //         .catch((err) => {
+    //           console.log('Erro ao ler docs firebase in main.js', err)
+    //         })
+    //     }
+    //   } catch (e) {
+    //     console.error('Error removing document: ', e)
+    //   }
+    // },
+
+    // delete using only the id
+    async deleteTask(cliente: Cliente) {
+      try {
+        await deleteDoc(doc(db, 'clientes', cliente.cpf))
+      } catch (e) {
+        console.error('Erro: ', e)
+      }
+      // cant have two clients with the same cpf
+    },
+
+    // editar cliente
+    async editCliente(cliente: Cliente) {
+      // try {
+      //   await updateDoc(doc(db, 'clientes', cliente.id), {
+      //     nome: cliente.nome,
+      //     cpf: cliente.cpf,
+      //     email: cliente.email,
+      //     dataCadastro: cliente.dataCadastro,
+      //     foto: cliente.foto
+      //   })
+      //   console.log('Editado com sucesso: ', cliente.id)
+      // } catch (e) {
+      //   console.error('Erro: ', e)
+      // }
+      // cant have two clients with the same cpf
+
+      try {
+        const q = query(collection(db, 'clientes'), where('cpf', '==', cliente.cpf))
+        const querySnapshot = await getDocs(q)
+        const clientesList: Cliente[] = []
+        querySnapshot.forEach((doc) => {
+          clientesList.push(doc.data() as Cliente)
+        })
+        if (clientesList.length > 0) {
+          return false
+        } else {
+          // await updateDoc(doc(db, 'clientes', cliente.cpf), {
+          //   nome: cliente.nome,
+          //   cpf: cliente.cpf,
+          //   email: cliente.email,
+          //   dataCadastro: cliente.dataCadastro,
+          //   foto: cliente.foto
+          // })
+          // return true
+        }
+      } catch (e) {
+        console.error(e)
+        return false
       }
     }
   }

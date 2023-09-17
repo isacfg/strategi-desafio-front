@@ -50,13 +50,11 @@
       </button>
     </div>
 
+    <div v-if="loading == true" class="h-screen flex items-center justify-center">
+      <span class="loading loading-spinner loading-lg text-success -mt-24"></span>
+    </div>
     <!-- array cards -->
-    <div class="custom-grid mx-auto mt-12 w-full gap-12">
-      <!-- <ImovelCard v-for="index in 9" :key="index" /> -->
-      <!-- <li v-for="imovel in imoveis.imoveisList" :key="imovel.id">
-        {{ imovel.nome }}
-      </li> -->
-
+    <div v-if="loading == false" class="custom-grid mx-auto mt-12 w-full gap-12">
       <ImovelCard v-for="imovel in imoveis" :key="imovel.id" :imovel="imovel" />
     </div>
 
@@ -88,7 +86,8 @@ export default {
       imoveis: [],
       shown: 9,
       priceOrder: '',
-      search: ''
+      search: '',
+      loading: true
     }
   },
 
@@ -163,6 +162,7 @@ export default {
     this.getImoveis().then((res) => {
       this.imoveis = res
       console.log(this.imoveis)
+      this.loading = false
     })
   }
 }

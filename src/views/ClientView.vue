@@ -32,6 +32,7 @@
         </button>
       </div>
       <button
+        onclick="addCliente.showModal()"
         class="btn-busca btn bg-greenish text-white font-medium max-md:w-full hover:bg-green-900"
       >
         Adicionar Cliente
@@ -44,6 +45,7 @@
         <div class="w-1/3 text-black font-semibold">
           <p>Cliente</p>
         </div>
+
         <div class="w-1/3 text-black font-semibold">
           <p>Contato</p>
         </div>
@@ -68,20 +70,152 @@
         </div>
 
         <div class="w-1/3 overflow-hidden text-black">
-          <p class="max-sm:text-sm">{{ cliente.dataCadastro }}</p>
+          <p class="max-sm:text-sm">{{ convertTimestampToDate(cliente.dataCadastro) }}</p>
         </div>
 
         <div class="w-auto text-black">
-          <img class="cursor-pointer" src="../assets/icons-cards/3dots.svg" alt="" srcset="" />
+          <div class="dropdown px-4 dropdown-bottom dropdown-end">
+            <label tabindex="0" class="">
+              <img class="cursor-pointer" src="../assets/icons-cards/3dots.svg" alt="" srcset=""
+            /></label>
+            <ul
+              tabindex="0"
+              class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-2xl w-52"
+            >
+              <li class="p-2 transition-custon rounded-lg mb-2">Ver mais</li>
+              <li
+                @click="
+                  selectCliente({
+                    id: cliente.id,
+                    nome: cliente.nome,
+                    email: cliente.email,
+                    cpf: cliente.cpf
+                  })
+                "
+                onclick="editCliente.showModal()"
+                class="p-2 transition-custon rounded-lg mb-2"
+              >
+                Editar
+              </li>
+              <li
+                @click="deleteCliente(cliente)"
+                class="p-2 rounded-lg hover:bg-red-600 hover:text-white"
+              >
+                Remover
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- modal adicionar cliente -->
+    <dialog id="addCliente" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box py-8 px-10">
+        <h3 class="text-2xl font-bold text-black mb-8">Criar Cliente</h3>
+        <div class="flex-col w-full items-center justify-end flex">
+          <input
+            v-model="clientName"
+            type="text"
+            placeholder="Nome do Cliente"
+            class="busca input input-bordered w-full mb-4"
+          />
+          <input
+            v-model="clientEmail"
+            type="email"
+            placeholder="Email do Cliente"
+            class="busca input input-bordered w-full mb-4"
+          />
+          <input
+            v-model="clientCPF"
+            type="text"
+            placeholder="CPF do Cliente"
+            class="busca input input-bordered w-full mb-4"
+          />
+          <!-- data de cadatro -->
+          <!-- <div class="form-control max-md:w-full">
+            <div class="input-group max-md:w-full">
+              <input
+                v-model="clientDataCadastro"
+                type="date"
+                placeholder="Data de Cadastro"
+                class="busca input input-bordered max-md:w-full"
+              />
+            </div>
+          </div> -->
+
+          <div class="w-full flex justify-between">
+            <button
+              id="closeModalAdd"
+              onclick="addCliente.close()"
+              class="btn-busca btn-modal btn bg-red-600 text-white font-medium hover:text-white hover:bg-red-900"
+            >
+              Cancelar
+            </button>
+            <button
+              @click="addClient"
+              class="btn-busca btn-modal btn bg-greenish text-white font-medium hover:bg-green-900"
+            >
+              Adicionar
+            </button>
+          </div>
+
+          <p class="text-red-600">{{ error }}</p>
+        </div>
+      </div>
+    </dialog>
+    <!-- fim modal adicionar cliente -->
+
+    <!-- modal editar cliente -->
+    <dialog id="editCliente" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box py-8 px-10">
+        <h3 class="text-2xl font-bold text-black mb-8">Editar Cliente</h3>
+        <div class="flex-col w-full items-center justify-end flex">
+          <input
+            v-model="selectedCliente.nome"
+            type="text"
+            placeholder="Nome do Cliente"
+            class="busca input input-bordered w-full mb-4"
+          />
+          <input
+            v-model="selectedCliente.email"
+            type="email"
+            placeholder="Email do Cliente"
+            class="busca input input-bordered w-full mb-4"
+          />
+          <input
+            v-model="selectedCliente.cpf"
+            type="text"
+            placeholder="CPF do Cliente"
+            class="busca input input-bordered w-full mb-4"
+          />
+
+          <div class="w-full flex justify-between">
+            <button
+              id="closeModalAdd"
+              onclick="editCliente.close()"
+              class="btn-busca btn-modal btn bg-red-600 text-white font-medium hover:text-white hover:bg-red-900"
+            >
+              Cancelar
+            </button>
+            <button
+              @click="editarCliente"
+              class="btn-busca btn-modal btn bg-greenish text-white font-medium hover:bg-green-900"
+            >
+              Editar
+            </button>
+          </div>
+
+          <p class="text-red-600">{{ error }}</p>
+        </div>
+      </div>
+    </dialog>
   </Navbar>
 </template>
 
 <script lang="ts">
 import Navbar from '@/components/Navbar.vue'
-
+import { Timestamp } from 'firebase/firestore'
 import { useClientesStore } from '@/stores/clientes'
 
 export default {
@@ -94,7 +228,20 @@ export default {
       clientes: [],
       shown: 9,
       cpfSearch: '',
-      sortBy: ''
+      sortBy: '',
+      loading: false,
+      clientName: '',
+      clientEmail: '',
+      clientCPF: '',
+      clientDataCadastro: '',
+      error: '',
+      topAviso: false,
+
+      selectedCliente: {
+        nome: '',
+        email: '',
+        cpf: ''
+      }
     }
   },
 
@@ -104,12 +251,48 @@ export default {
     },
 
     handleSearch() {
-      console.log('handle search')
-      console.log(this.cpfSearch + 'cpf')
-
       this.getClientesByCpf().then((res) => {
         this.clientes = res
       })
+    },
+
+    // convert timestamp do firebase to date
+    convertTimestampToDate(timestamp: any) {
+      return timestamp.toDate().toLocaleDateString()
+    },
+
+    selectCliente(cliente: any) {
+      this.selectedCliente = cliente
+      console.log(this.selectedCliente)
+    },
+
+    async editarCliente() {
+      if (
+        this.selectedCliente.nome == '' ||
+        this.selectedCliente.email == '' ||
+        this.selectedCliente.cpf == ''
+      ) {
+        this.error = 'Preencha todos os campos'
+        return
+      }
+
+      try {
+        let res = await useClientesStore().editCliente(this.selectedCliente)
+        this.getClientes().then((res) => {
+          this.clientes = res
+        })
+        this.clientName = ''
+        this.clientEmail = ''
+        this.clientCPF = ''
+        this.clientDataCadastro = ''
+
+        editCliente.close()
+
+        return res
+      } catch (error) {
+        console.log(error)
+        this.error = error
+      }
     },
 
     async getClientes() {
@@ -122,6 +305,57 @@ export default {
       this.cpfSearch = this.cpfSearch.replace(/\D/g, '')
       let res = await useClientesStore().getClienteByCPF(this.cpfSearch)
       return res
+    },
+
+    async deleteCliente(cpf: string) {
+      try {
+        await useClientesStore().deleteTask(cpf)
+        this.getClientes().then((res) => {
+          this.clientes = res
+        })
+        return 'Cliente deletado com sucesso'
+      } catch (error) {
+        console.log(error)
+      }
+    },
+
+    async addClient() {
+      if (this.clientName == '' || this.clientEmail == '' || this.clientCPF == '') {
+        this.error = 'Preencha todos os campos'
+        return
+      }
+
+      let date = Timestamp.now()
+      this.clientDataCadastro = date
+
+      try {
+        let res = await useClientesStore().addClienteToDB({
+          nome: this.clientName,
+          email: this.clientEmail,
+          cpf: this.clientCPF,
+          dataCadastro: this.clientDataCadastro
+        })
+
+        if (res == false) {
+          this.error = 'CPF já cadastrado'
+          return
+        }
+
+        this.getClientes().then((res) => {
+          this.clientes = res
+        })
+        this.clientName = ''
+        this.clientEmail = ''
+        this.clientCPF = ''
+        this.clientDataCadastro = ''
+
+        addCliente.close()
+
+        return res
+      } catch (error) {
+        console.log(error)
+        this.error = error
+      }
     }
   },
 
@@ -136,6 +370,26 @@ export default {
 <style lang="scss">
 .gray {
   background: #efefef;
+}
+
+.transition-custom {
+  transition-property: all;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-box {
+  border-radius: 20px;
+}
+
+.btn-modal {
+  width: 48%;
+}
+
+@media (max-width: 650px) {
+  .modal-box {
+    border-radius: 0;
+  }
 }
 
 .row-header {
