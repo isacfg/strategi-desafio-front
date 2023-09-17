@@ -1,50 +1,42 @@
 <template>
   <Navbar>
-    <h1 class="text-black text-4xl font-bold mt-20 mb-8 px-4">Simulação de pagamento</h1>
+    <h1 class="text-black text-4xl font-bold mt-20 mb-8">Simulação de pagamento</h1>
 
     <div class="mx-auto flex gap-x-20 max-lg:flex-col">
       <div>
         <!-- search -->
-        <div class="flex flex-wrap justify-between mb-4">
+        <!-- <div class="flex flex-wrap justify-between mb-4">
           <div class="form-control w-4/5 max-lg:w-full">
             <div class="input-group w-full">
               <input
                 type="text"
                 placeholder="Buscar Imóvel"
-                class="busca input input-bordered w-full"
+                class="busca input input-bordered w-full mb-4"
               />
             </div>
           </div>
           <button
             class="btn-busca btn bg-greenish text-white font-medium max-lg:w-full hover:bg-green-900"
           >
-            <!-- <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
-        </svg> -->
+         
             Buscar
           </button>
-        </div>
+        </div> -->
 
         <div class="flex flex-col gap-y-4 max-lg:w-full">
-          <img class="house-img rounded-2xl" src="../assets/login/login.jpg" alt="" srcset="" />
+          <img class="house-img rounded-2xl" :src="`/imoveis/${imovel.id}.jpg`" alt="" srcset="" />
           <div class="flex items-center justify-between px-2">
-            <p class="text-black text-xl font-medium">
-              Praia Bella Casa quatro quatroquatro banh...
-            </p>
+            <div>
+              <p class="text-black text-xl font-medium">
+                {{ truncateTitle(imovel.nome, 40) }}
+              </p>
+              <p class="val-span font-medium">
+                {{ imovel.adress }}
+              </p>
+            </div>
             <div class="flex items-center gap-x-1">
               <img class="star" src="../assets/icons-cards/star-big.png" alt="" srcset="" />
-              <p class="text-xl text-black">4.75</p>
+              <p class="text-xl text-black">{{ imovel.rating }}</p>
             </div>
           </div>
 
@@ -61,6 +53,7 @@
                   <input
                     type="number"
                     id="valor"
+                    v-model="novoValor"
                     placeholder="R$ 1.200.000,00"
                     class="base-input input input-bordered w-full max-lg:mb-2"
                   />
@@ -79,6 +72,7 @@
                   <input
                     type="number"
                     id="parcelas"
+                    v-model="parcelas"
                     placeholder="150"
                     class="base-input input input-bordered w-full max-lg:mb-2"
                     min="1"
@@ -99,6 +93,7 @@
                   <input
                     type="number"
                     id="desconto"
+                    v-model="desconto"
                     placeholder="0"
                     class="base-input input input-bordered w-full max-lg:mb-2"
                     min="0"
@@ -107,11 +102,16 @@
                 </div>
               </div>
             </div>
-            <button
-              class="btn mt-8 w-1/3 max-lg:w-full bg-greenish rounded-lg text-white font-medium hover:bg-green-900 hover:scale-105"
-            >
-              Simular
-            </button>
+
+            <div class="w-full block">
+              <button
+                @click.prevent="toggleCalc"
+                class="btn mt-8 w-1/3 max-lg:w-full bg-greenish rounded-lg text-white font-medium hover:bg-green-900 hover:scale-105"
+              >
+                Simular
+              </button>
+              <p class="text-red-500 text-sm">{{ error }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -120,46 +120,80 @@
         <h2 class="text-black text-2xl font-semibold mb-2">Detalhes</h2>
         <div class="flex items-center px-3 py-3 rounded-lg w-full justify-between bg-val">
           <p class="text-black">Valor total <span class="val-span">(R$)</span></p>
-          <p class="text-black">R$ 1.200.000,00</p>
+          <p class="text-black">{{ formatPrice(novoValor) }}</p>
         </div>
         <div class="flex items-center px-3 py-3 rounded-lg w-full justify-between">
-          <p class="text-black">Desconto aplicado <span class="val-span">(0%)</span></p>
-          <p class="text-black">R$ 0</p>
+          <p class="text-black">
+            Desconto aplicado
+            <span class="val-span">({{ desconto == null ? 0 : desconto }}%)</span>
+          </p>
+          <p class="text-black">{{ calculateDesconto(novoValor, desconto) }}</p>
         </div>
         <div class="flex items-center px-3 py-3 rounded-lg w-full justify-between">
           <p class="text-black">Comissão <span class="val-span">(5%)</span></p>
-          <p class="text-black">R$ 1.200,00</p>
+          <p class="text-black">{{ formatPrice(novoValor * 0.05) }}</p>
         </div>
 
-        <!-- vif simulation is clicked -->
-        <div class="bg-greenish p-8 rounded-3xl mt-8">
+        <div v-if="isCalc" class="bg-greenish p-8 rounded-3xl mt-8">
           <h2 class="text-white text-2xl mb-8 font-semibold">Pagamento Parcelado</h2>
 
           <!-- parcelas -->
           <div class="flex flex-col gap-y-2">
             <div class="flex items-center w-full justify-between">
-              <p class="text-white text-lg"><span>150</span> vezes</p>
-              <p class="text-white text-lg">R$ 1.200,00</p>
+              <p class="text-white text-lg">
+                <span>{{ parcelas - 3 }}</span> vezes
+              </p>
+              <p class="text-white text-lg">
+                {{ calculateParcelas(novoValor, desconto, parcelas - 3) }}
+              </p>
             </div>
             <div class="flex items-center w-full justify-between">
-              <p class="text-white text-lg"><span>150</span> vezes</p>
-              <p class="text-white text-lg">R$ 1.200,00</p>
+              <p class="text-white text-lg">
+                <span>{{ parcelas - 2 }}</span> vezes
+              </p>
+              <p class="text-white text-lg">
+                {{ calculateParcelas(novoValor, desconto, parcelas - 2) }}
+              </p>
             </div>
             <div class="flex items-center w-full justify-between">
-              <p class="text-white text-lg"><span>150</span> vezes</p>
-              <p class="text-white text-lg">R$ 1.200,00</p>
+              <p class="text-white text-lg">
+                <span>{{ parcelas - 1 }}</span> vezes
+              </p>
+              <p class="text-white text-lg">
+                {{ calculateParcelas(novoValor, desconto, parcelas - 1) }}
+              </p>
             </div>
             <div class="flex items-center w-full justify-between">
-              <p class="text-white text-lg"><span>150</span> vezes</p>
-              <p class="text-white text-lg">R$ 1.200,00</p>
+              <p class="text-white text-lg">
+                <span>{{ parcelas }}</span> vezes
+              </p>
+              <p class="text-white text-lg">
+                {{ calculateParcelas(novoValor, desconto, parcelas) }}
+              </p>
             </div>
             <div class="flex items-center w-full justify-between">
-              <p class="text-white text-lg"><span>150</span> vezes</p>
-              <p class="text-white text-lg">R$ 1.200,00</p>
+              <p class="text-white text-lg">
+                <span>{{ parcelas + 1 }}</span> vezes
+              </p>
+              <p class="text-white text-lg">
+                {{ calculateParcelas(novoValor, desconto, parcelas + 1) }}
+              </p>
             </div>
             <div class="flex items-center w-full justify-between">
-              <p class="text-white text-lg"><span>150</span> vezes</p>
-              <p class="text-white text-lg">R$ 1.200,00</p>
+              <p class="text-white text-lg">
+                <span>{{ parcelas + 2 }}</span> vezes
+              </p>
+              <p class="text-white text-lg">
+                {{ calculateParcelas(novoValor, desconto, parcelas + 2) }}
+              </p>
+            </div>
+            <div class="flex items-center w-full justify-between">
+              <p class="text-white text-lg">
+                <span>{{ parcelas + 3 }}</span> vezes
+              </p>
+              <p class="text-white text-lg">
+                {{ calculateParcelas(novoValor, desconto, parcelas + 3) }}
+              </p>
             </div>
           </div>
 
@@ -178,12 +212,36 @@
 import Navbar from '@/components/Navbar.vue'
 import CategoriaSelect from '@/components/CategoriaSelect.vue'
 import ImovelCard from '@/components/ImovelCard.vue'
+import { useImoveisStore } from '@/stores/imoveis'
+
 export default {
   name: 'HomeView',
   components: {
     Navbar,
     CategoriaSelect,
     ImovelCard
+  },
+  data() {
+    return {
+      imovel: {
+        id: 1,
+        categoria: 'Castelo',
+        nome: 'Castelo de Hogwarts',
+        adress: 'Hogwarts 1920, Escócia',
+        quartos: 7,
+        banheiros: 4,
+        garagem: 2,
+        preco: 1000000,
+        rating: 4.5,
+        img: '/imoveis/1.jpg'
+      },
+      isCalc: false,
+      desconto: null,
+      parcelas: null,
+      comissao: 0,
+      novoValor: 0,
+      error: ''
+    }
   },
   methods: {
     truncateTitle(title: string, maxLength: number): string {
@@ -192,7 +250,53 @@ export default {
       } else {
         return title
       }
+    },
+    async getImovel(idp) {
+      let res = await useImoveisStore().getImovelById(idp)
+      return res
+    },
+
+    formatPrice(price: number): string {
+      return price.toLocaleString('pt-br', {
+        style: 'currency',
+        currency: 'BRL'
+      })
+    },
+
+    calculateDesconto(price: number, desconto: number): string {
+      return `${this.formatPrice(price * (desconto / 100))}`
+    },
+
+    calculateParcelas(price: number, desconto: number, parcelas: number): string {
+      if (desconto == null) desconto = 0
+      const precoComDesconto = price - price * (desconto / 100)
+      return `${this.formatPrice(precoComDesconto / parcelas)}`
+    },
+
+    calculateComissao(price: number, desconto: number): string {
+      const precoComDesconto = price - price * (desconto / 100)
+      return `Comissão: ${this.formatPrice(precoComDesconto * 0.05)}`
+    },
+
+    toggleCalc() {
+      if (this.parcelas > 0) {
+        this.isCalc = true
+        this.error = ''
+      } else {
+        this.error = 'Insira um valor para parcelas'
+      }
     }
+  },
+
+  mounted() {
+    // get rout params id and put in imovel.id
+    this.imovel.id = this.$route.params.id
+
+    // let r = this.getImovel(this.$route.params.id)
+    this.getImovel(Number(this.$route.params.id)).then((res) => {
+      this.imovel = res
+      this.novoValor = this.imovel.preco
+    })
   }
 }
 </script>
@@ -225,6 +329,7 @@ export default {
 .bg-val {
   background: #f4f5f6;
 }
+
 .star {
   width: 20px;
   height: 20px;

@@ -73,11 +73,12 @@ export const useClientesStore = defineStore('clientes', {
 
     async getClientesFromDB(count) {
       try {
-        const q = query(collection(db, 'clientes'), orderBy('dataCadastro', 'desc'), limit(count))
+        const q = query(collection(db, 'clientes'), orderBy('dataCadastro', 'desc'))
         const querySnapshot = await getDocs(q)
         const clientesList = []
         querySnapshot.forEach((doc) => {
-          clientesList.push(doc.data())
+          // clientesList.push(doc.data())
+          clientesList.push({ id: doc.id, ...doc.data() })
         })
         this.clientesList = clientesList
         return this.clientesList
@@ -92,7 +93,8 @@ export const useClientesStore = defineStore('clientes', {
         const querySnapshot = await getDocs(q)
         const clientesList = []
         querySnapshot.forEach((doc) => {
-          clientesList.push(doc.data())
+          // clientesList.push(doc.data())
+          clientesList.push({ id: doc.id, ...doc.data() })
         })
         this.clientesList = clientesList
         return this.clientesList
@@ -107,7 +109,8 @@ export const useClientesStore = defineStore('clientes', {
         const querySnapshot = await getDocs(q)
         const clientesList = []
         querySnapshot.forEach((doc) => {
-          clientesList.push(doc.data())
+          // clientesList.push(doc.data())
+          clientesList.push({ id: doc.id, ...doc.data() })
         })
         if (clientesList.length > 0) {
           return false
@@ -121,78 +124,36 @@ export const useClientesStore = defineStore('clientes', {
       }
     },
 
-    // deletar cliente
-    //  async deleteUser() {
-    //   console.log('deleteUser')
-    //   try {
-    //     if (this.isModalOpen) {
-    //       await deleteDoc(doc(projectsCollection, this.id))
-    //       this.isModalOpen = !this.isModalOpen
-
-    //       // Updating the store
-    //       getDocs(projectsCollection)
-    //         .then((snapshot) => {
-    //           let projects = []
-    //           snapshot.forEach((doc) => {
-    //             projects.push({ ...doc.data(), id: doc.id })
-    //           })
-    //           // Push data to store
-    //           useProjectsStore().setProjects(projects)
-    //           // console.log(projects)
-    //         })
-    //         .catch((err) => {
-    //           console.log('Erro ao ler docs firebase in main.js', err)
-    //         })
-    //     }
-    //   } catch (e) {
-    //     console.error('Error removing document: ', e)
-    //   }
-    // },
-
     // delete using only the id
-    async deleteTask(cliente) {
+    async deleteClientFromDB(id) {
       try {
-        await deleteDoc(doc(db, 'clientes', cliente.cpf))
+        await deleteDoc(doc(db, 'clientes', id))
       } catch (e) {
         console.error('Erro: ', e)
       }
-      // cant have two clients with the same cpf
     },
 
     // editar cliente
     async editCliente(cliente) {
-      // try {
-      //   await updateDoc(doc(db, 'clientes', cliente.id), {
-      //     nome: cliente.nome,
-      //     cpf: cliente.cpf,
-      //     email: cliente.email,
-      //     dataCadastro: cliente.dataCadastro,
-      //     foto: cliente.foto
-      //   })
-      //   console.log('Editado com sucesso: ', cliente.id)
-      // } catch (e) {
-      //   console.error('Erro: ', e)
-      // }
-      // cant have two clients with the same cpf
 
       try {
         const q = query(collection(db, 'clientes'), where('cpf', '==', cliente.cpf))
         const querySnapshot = await getDocs(q)
         const clientesList = []
         querySnapshot.forEach((doc) => {
-          clientesList.push(doc.data())
+          // clientesList.push(doc.data())
+          clientesList.push({ id: doc.id, ...doc.data() })
         })
         if (clientesList.length > 0) {
           return false
         } else {
-          // await updateDoc(doc(db, 'clientes', cliente.cpf), {
-          //   nome: cliente.nome,
-          //   cpf: cliente.cpf,
-          //   email: cliente.email,
-          //   dataCadastro: cliente.dataCadastro,
-          //   foto: cliente.foto
-          // })
-          // return true
+          await updateDoc(doc(db, 'clientes', cliente.id), {
+            nome: cliente.nome,
+            cpf: cliente.cpf,
+            email: cliente.email,
+            telefone: cliente.telefone
+          })
+          return true
         }
       } catch (e) {
         console.error(e)

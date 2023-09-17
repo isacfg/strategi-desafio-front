@@ -82,14 +82,29 @@
               tabindex="0"
               class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-2xl w-52"
             >
-              <li class="p-2 transition-custon rounded-lg mb-2">Ver mais</li>
               <li
                 @click="
                   selectCliente({
                     id: cliente.id,
                     nome: cliente.nome,
                     email: cliente.email,
-                    cpf: cliente.cpf
+                    cpf: cliente.cpf,
+                    telefone: cliente.telefone
+                  })
+                "
+                onclick="verCliente.showModal()"
+                class="p-2 transition-custon rounded-lg mb-2"
+              >
+                Ver mais
+              </li>
+              <li
+                @click="
+                  selectCliente({
+                    id: cliente.id,
+                    nome: cliente.nome,
+                    email: cliente.email,
+                    cpf: cliente.cpf,
+                    telefone: cliente.telefone
                   })
                 "
                 onclick="editCliente.showModal()"
@@ -131,6 +146,14 @@
             type="text"
             placeholder="CPF do Cliente"
             class="busca input input-bordered w-full mb-4"
+            v-mask="'###.###.###-##'"
+          />
+          <input
+            v-model="clientTelefone"
+            type="tel"
+            placeholder="Telefone do Cliente"
+            class="busca input input-bordered w-full mb-4"
+            v-mask="'(##) ####-####'"
           />
           <!-- data de cadatro -->
           <!-- <div class="form-control max-md:w-full">
@@ -188,6 +211,14 @@
             type="text"
             placeholder="CPF do Cliente"
             class="busca input input-bordered w-full mb-4"
+            v-mask="'###.###.###-##'"
+          />
+          <input
+            v-model="selectedCliente.telefone"
+            type="tel"
+            placeholder="Telefone do Cliente"
+            class="busca input input-bordered w-full mb-4"
+            v-mask="'(##) ####-####'"
           />
 
           <div class="w-full flex justify-between">
@@ -210,6 +241,54 @@
         </div>
       </div>
     </dialog>
+    <!-- modal ver mais cliente -->
+    <dialog id="verCliente" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box py-8 px-10">
+        <h3 class="text-2xl font-bold text-black mb-8">Detalhes Cliente</h3>
+        <div class="flex-col w-full items-center justify-end flex">
+          <input
+            disabled
+            v-model="selectedCliente.nome"
+            type="text"
+            placeholder="Nome do Cliente"
+            class="busca input input-bordered w-full mb-4"
+          />
+          <input
+            disabled
+            v-model="selectedCliente.email"
+            type="email"
+            placeholder="Email do Cliente"
+            class="busca input input-bordered w-full mb-4"
+          />
+          <input
+            disabled
+            v-model="selectedCliente.cpf"
+            type="text"
+            placeholder="CPF do Cliente"
+            class="busca input input-bordered w-full mb-4"
+          />
+          <input
+            disabled
+            v-model="selectedCliente.telefone"
+            type="tel"
+            placeholder="Telefone do Cliente"
+            class="busca input input-bordered w-full mb-4"
+          />
+
+          <div class="w-full flex justify-between">
+            <button
+              id="closeModalAdd"
+              onclick="verCliente.close()"
+              class="btn-busca btn-modal btn bg-red-600 text-white font-medium hover:text-white hover:bg-red-900"
+            >
+              Fechar
+            </button>
+          </div>
+
+          <p class="text-red-600">{{ error }}</p>
+        </div>
+      </div>
+    </dialog>
   </Navbar>
 </template>
 
@@ -217,11 +296,15 @@
 import Navbar from '@/components/Navbar.vue'
 import { Timestamp } from 'firebase/firestore'
 import { useClientesStore } from '@/stores/clientes'
+import { mask } from 'vue-the-mask'
 
 export default {
   name: 'ClienteView',
   components: {
     Navbar
+  },
+  directives: {
+    mask
   },
   data() {
     return {
@@ -230,17 +313,22 @@ export default {
       cpfSearch: '',
       sortBy: '',
       loading: false,
+
       clientName: '',
       clientEmail: '',
       clientCPF: '',
       clientDataCadastro: '',
+      clientTelefone: '',
+
       error: '',
       topAviso: false,
 
       selectedCliente: {
+        id: '',
         nome: '',
         email: '',
-        cpf: ''
+        cpf: '',
+        telefone: ''
       }
     }
   },
@@ -263,7 +351,6 @@ export default {
 
     selectCliente(cliente: any) {
       this.selectedCliente = cliente
-      console.log(this.selectedCliente)
     },
 
     async editarCliente() {
@@ -277,18 +364,22 @@ export default {
       }
 
       try {
-        let res = await useClientesStore().editCliente(this.selectedCliente)
+        // let res = await useClientesStore().editCliente(this.selectedCliente)
+        // this.getClientes().then((res) => {
+        //   this.clientes = res
+        // })
+
+        this.selectedCliente.cpf = this.selectedCliente.cpf.replace(/\D/g, '')
+        // convert to number
+        this.selectedCliente.cpf = Number(this.selectedCliente.cpf)
+        await useClientesStore().editCliente(this.selectedCliente)
         this.getClientes().then((res) => {
           this.clientes = res
         })
-        this.clientName = ''
-        this.clientEmail = ''
-        this.clientCPF = ''
-        this.clientDataCadastro = ''
 
         editCliente.close()
 
-        return res
+        return 'Cliente editado com sucesso'
       } catch (error) {
         console.log(error)
         this.error = error
@@ -307,9 +398,9 @@ export default {
       return res
     },
 
-    async deleteCliente(cpf: string) {
+    async deleteCliente(cliente) {
       try {
-        await useClientesStore().deleteTask(cpf)
+        await useClientesStore().deleteClientFromDB(cliente.id)
         this.getClientes().then((res) => {
           this.clientes = res
         })
@@ -333,7 +424,8 @@ export default {
           nome: this.clientName,
           email: this.clientEmail,
           cpf: this.clientCPF,
-          dataCadastro: this.clientDataCadastro
+          dataCadastro: this.clientDataCadastro,
+          telefone: this.clientTelefone
         })
 
         if (res == false) {
@@ -348,6 +440,7 @@ export default {
         this.clientEmail = ''
         this.clientCPF = ''
         this.clientDataCadastro = ''
+        this.clientTelefone = ''
 
         addCliente.close()
 

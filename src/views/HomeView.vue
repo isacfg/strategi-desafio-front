@@ -37,7 +37,7 @@
         v-model="priceOrder"
         class="select select-bordered focus:outline-none sort-by w-full max-md:w-full rounded-lg"
       >
-        <option disabled selected>Ordenar por:</option>
+        <option value="null" disabled selected>Ordenar por:</option>
         <option value="asc">Menor preço</option>
         <option value="desc">Maior preço</option>
       </select>
@@ -85,8 +85,8 @@ export default {
     return {
       imoveis: [],
       shown: 9,
-      priceOrder: '',
-      search: '',
+      priceOrder: null,
+      search: null,
       loading: true
     }
   },

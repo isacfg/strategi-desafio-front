@@ -40,10 +40,6 @@ export const useImoveisStore = defineStore('imoveis', {
     ]
   }),
   actions: {
-    // get state ok
-    // atualizar state ok
-
-    // get db
 
     returnImovies() {
       return this.imoveisList
@@ -59,10 +55,24 @@ export const useImoveisStore = defineStore('imoveis', {
         const querySnapshot = await getDocs(q)
         let localImoveisList = []
         querySnapshot.forEach((doc) => {
-          localImoveisList.push(doc.data())
+          localImoveisList.push({ id: doc.id, ...doc.data() })
         })
         this.imoveisList = localImoveisList
         return this.imoveisList
+      } catch (error) {
+        console.log(error)
+      }
+    },
+
+    async getImovelById(id) {
+      try {
+        const q = query(collection(db, 'imoveis'), where('id', '==', id))
+        const querySnapshot = await getDocs(q)
+        let localImoveisList = []
+        querySnapshot.forEach((doc) => {
+          localImoveisList.push({ id: doc.id, ...doc.data() })
+        })
+        return localImoveisList[0]
       } catch (error) {
         console.log(error)
       }
@@ -74,7 +84,7 @@ export const useImoveisStore = defineStore('imoveis', {
         const querySnapshot = await getDocs(q)
         let localImoveisList = []
         querySnapshot.forEach((doc) => {
-          localImoveisList.push(doc.data())
+          localImoveisList.push({ id: doc.id, ...doc.data() })
         })
         this.imoveisList = localImoveisList
         return this.imoveisList
@@ -83,6 +93,7 @@ export const useImoveisStore = defineStore('imoveis', {
       }
     },
 
+
     async sortImoveisByPrice(order) {
       if (order === 'asc') {
         try {
@@ -90,7 +101,7 @@ export const useImoveisStore = defineStore('imoveis', {
           const querySnapshot = await getDocs(q)
           let localImoveisList = []
           querySnapshot.forEach((doc) => {
-            localImoveisList.push(doc.data())
+            localImoveisList.push({ id: doc.id, ...doc.data() })
           })
           this.imoveisList = localImoveisList
           return this.imoveisList
@@ -103,7 +114,7 @@ export const useImoveisStore = defineStore('imoveis', {
           const querySnapshot = await getDocs(q)
           let localImoveisList = []
           querySnapshot.forEach((doc) => {
-            localImoveisList.push(doc.data())
+            localImoveisList.push({ id: doc.id, ...doc.data() })
           })
           this.imoveisList = localImoveisList
           return this.imoveisList
@@ -129,13 +140,14 @@ export const useImoveisStore = defineStore('imoveis', {
     //   }
     // }
 
+
     async getImoveisByName(name) {
       try {
         const q = query(collection(db, 'imoveis'), where('nome', '==', name))
         const querySnapshot = await getDocs(q)
         let localImoveisList = []
         querySnapshot.forEach((doc) => {
-          localImoveisList.push(doc.data())
+          localImoveisList.push({ id: doc.id, ...doc.data() })
         })
         this.imoveisList = localImoveisList
         return this.imoveisList

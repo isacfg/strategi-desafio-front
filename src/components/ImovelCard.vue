@@ -50,17 +50,20 @@
       </div>
 
       <div class="card-actions">
-        <button
+        <RouterLink
+          :to="`/simulacao/${imovel.id}`"
           class="btn btn-primary btn-block mt-4 bg-greenish rounded-lg text-white border-greenish font-medium hover:bg-green-900 hover:border-green-900 hover:scale-105"
         >
           Simular
-        </button>
+        </RouterLink>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { RouterLink } from 'vue-router'
+
 export default {
   name: 'ImovelCard',
   props: {
