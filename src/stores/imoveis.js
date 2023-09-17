@@ -20,25 +20,10 @@ const analytics = getAnalytics(firebaseApp)
 
 const db = getFirestore()
 
-interface Imovel {
-  id: number
-  categoria: string
-  nome: string
-  adress: string
-  quartos: number
-  banheiros: number
-  garagem: number
-  preco: number
-  rating: number
-  img: string
-}
 
-interface ImoveisState {
-  imoveisList: Imovel[]
-}
 
 export const useImoveisStore = defineStore('imoveis', {
-  state: (): ImoveisState => ({
+  state: () => ({
     imoveisList: [
       {
         id: 1,
@@ -64,11 +49,11 @@ export const useImoveisStore = defineStore('imoveis', {
       return this.imoveisList
     },
 
-    setStateImoveis(imoveisList: Imovel[]) {
+    setStateImoveis(imoveisList) {
       this.imoveisList = imoveisList
     },
 
-    async getImoveisFromDB(count: number) {
+    async getImoveisFromDB(count) {
       try {
         const q = query(collection(db, 'imoveis'), limit(count))
         const querySnapshot = await getDocs(q)
@@ -83,7 +68,7 @@ export const useImoveisStore = defineStore('imoveis', {
       }
     },
 
-    async getImoveisByCategory(category: string) {
+    async getImoveisByCategory(category) {
       try {
         const q = query(collection(db, 'imoveis'), where('categoria', '==', category))
         const querySnapshot = await getDocs(q)
@@ -98,7 +83,7 @@ export const useImoveisStore = defineStore('imoveis', {
       }
     },
 
-    async sortImoveisByPrice(order: string) {
+    async sortImoveisByPrice(order) {
       if (order === 'asc') {
         try {
           const q = query(collection(db, 'imoveis'), orderBy('preco', 'asc'))
@@ -144,7 +129,7 @@ export const useImoveisStore = defineStore('imoveis', {
     //   }
     // }
 
-    async getImoveisByName(name: string) {
+    async getImoveisByName(name) {
       try {
         const q = query(collection(db, 'imoveis'), where('nome', '==', name))
         const querySnapshot = await getDocs(q)

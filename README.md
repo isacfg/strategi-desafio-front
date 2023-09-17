@@ -7,7 +7,7 @@ Desafio strategi front-end
 - link hosted
 - demo video
 - link github
-- footer 
+- footer
 - credenciais de login
 
 ## Project Setup

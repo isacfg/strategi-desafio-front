@@ -33,24 +33,13 @@ const analytics = getAnalytics(firebaseApp)
 const db = getFirestore()
 const clientsCollection = collection(db, 'clientes')
 
-interface Cliente {
-  id?: number
-  nome: string
-  cpf: string
-  email: string
-  dataCadastro: any
-  foto?: any
-}
 
-interface ClientesState {
-  clientesList: Cliente[]
-}
 
 export const useClientesStore = defineStore('clientes', {
   // nome cpf email telefone
   // não podem haver dois clientes com o mesmo cpf ou com o mesmo email, e clique em cadastrar.
 
-  state: (): ClientesState => ({
+  state: () => ({
     clientesList: [
       {
         id: 1,
@@ -82,13 +71,13 @@ export const useClientesStore = defineStore('clientes', {
       return this.clientesList
     },
 
-    async getClientesFromDB(count: number) {
+    async getClientesFromDB(count) {
       try {
         const q = query(collection(db, 'clientes'), orderBy('dataCadastro', 'desc'), limit(count))
         const querySnapshot = await getDocs(q)
-        const clientesList: Cliente[] = []
+        const clientesList = []
         querySnapshot.forEach((doc) => {
-          clientesList.push(doc.data() as Cliente)
+          clientesList.push(doc.data())
         })
         this.clientesList = clientesList
         return this.clientesList
@@ -97,13 +86,13 @@ export const useClientesStore = defineStore('clientes', {
       }
     },
 
-    async getClienteByCPF(cpf: string) {
+    async getClienteByCPF(cpf) {
       try {
         const q = query(collection(db, 'clientes'), where('cpf', '==', cpf))
         const querySnapshot = await getDocs(q)
-        const clientesList: Cliente[] = []
+        const clientesList = []
         querySnapshot.forEach((doc) => {
-          clientesList.push(doc.data() as Cliente)
+          clientesList.push(doc.data())
         })
         this.clientesList = clientesList
         return this.clientesList
@@ -112,13 +101,13 @@ export const useClientesStore = defineStore('clientes', {
       }
     },
 
-    async addClienteToDB(cliente: Cliente) {
+    async addClienteToDB(cliente) {
       try {
         const q = query(collection(db, 'clientes'), where('cpf', '==', cliente.cpf))
         const querySnapshot = await getDocs(q)
-        const clientesList: Cliente[] = []
+        const clientesList = []
         querySnapshot.forEach((doc) => {
-          clientesList.push(doc.data() as Cliente)
+          clientesList.push(doc.data())
         })
         if (clientesList.length > 0) {
           return false
@@ -161,7 +150,7 @@ export const useClientesStore = defineStore('clientes', {
     // },
 
     // delete using only the id
-    async deleteTask(cliente: Cliente) {
+    async deleteTask(cliente) {
       try {
         await deleteDoc(doc(db, 'clientes', cliente.cpf))
       } catch (e) {
@@ -171,7 +160,7 @@ export const useClientesStore = defineStore('clientes', {
     },
 
     // editar cliente
-    async editCliente(cliente: Cliente) {
+    async editCliente(cliente) {
       // try {
       //   await updateDoc(doc(db, 'clientes', cliente.id), {
       //     nome: cliente.nome,
@@ -189,9 +178,9 @@ export const useClientesStore = defineStore('clientes', {
       try {
         const q = query(collection(db, 'clientes'), where('cpf', '==', cliente.cpf))
         const querySnapshot = await getDocs(q)
-        const clientesList: Cliente[] = []
+        const clientesList = []
         querySnapshot.forEach((doc) => {
-          clientesList.push(doc.data() as Cliente)
+          clientesList.push(doc.data())
         })
         if (clientesList.length > 0) {
           return false
