@@ -1,12 +1,30 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
+import { getAuth } from 'firebase/auth'
+
+const isAuthenticated = async (to, from, next) => {
+  const auth = getAuth()
+  const user = await new Promise((resolve) => {
+    auth.onAuthStateChanged((user) => {
+      resolve(user)
+    })
+  })
+
+  if (user) {
+    next()
+  } else {
+    next('/login')
+  }
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
       name: 'home',
+      beforeEnter: isAuthenticated,
       component: HomeView
     },
     {
@@ -20,6 +38,7 @@ const router = createRouter({
     {
       path: '/simulacao',
       name: 'simulacao',
+      beforeEnter: isAuthenticated,
       component: () => import('../views/SimulationView.vue')
     },
     // {
@@ -30,17 +49,20 @@ const router = createRouter({
     {
       path: '/clientes',
       name: 'clientes',
+      beforeEnter: isAuthenticated,
       component: () => import('../views/ClientView.vue')
     },
     {
       // resumo do pedido
       path: '/resumo',
       name: 'resumo',
+      beforeEnter: isAuthenticated,
       component: () => import('../views/OrderSummaryView.vue')
     },
     {
       path: '/pedidos',
       name: 'pedidos',
+      beforeEnter: isAuthenticated,
       component: () => import('../views/OrderListView.vue')
     }
   ]
