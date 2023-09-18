@@ -7,30 +7,37 @@
         <div class="bottom-row flex flex-row gap-x-12 w-full">
           <div>
             <h2 class="text-xl font-semibold mb-2">Vendedor</h2>
-            <p>Nome do vendedor</p>
-            <p>Email do vendedor</p>
+            <p>{{ transformEmailToName(email) }}</p>
+            <p>{{ email }}</p>
           </div>
 
           <div>
             <h2 class="text-xl font-semibold mb-2">Cliente</h2>
-            <p>Nome do cliente</p>
-            <p>Email do cliente</p>
+            <p>{{ pedido.clienteName }}</p>
+            <p>{{ pedido.clienteEmail }}</p>
           </div>
         </div>
 
         <div class="bottom-row flex flex-row gap-x-12 w-full">
           <div>
             <h2 class="text-xl font-semibold mb-2">Imóvel</h2>
-            <p>ID: <span>#1233123</span></p>
-            <p>Rua Praia Bella 123, Natal RN</p>
-            <p>Valor de Venda: R$ <span>13.290.123</span></p>
-            <p>Valor de Comissão: R$ <span>13.123</span></p>
+            <p>
+              ID: <span>{{ pedido.imovelID }}</span>
+            </p>
+            <p>{{ pedido.imovelName }}</p>
+            <p>{{ pedido.imovelAdress }}</p>
+            <p>
+              Valor de Venda: <span>{{ formatPrice(pedido.valorFinal) }}</span>
+            </p>
+            <p>
+              <span>{{ pedido.comissao }}</span>
+            </p>
           </div>
 
           <div>
             <img
               class="rounded-lg w-full object-cover"
-              src="../assets/placeholder-resumo.png"
+              :src="`/imoveis/${pedido.imovelID}.jpg`"
               alt=""
               srcset=""
             />
@@ -40,8 +47,12 @@
         <div class="bottom-row flex flex-row gap-x-12 w-full">
           <div>
             <h2 class="text-xl font-semibold mb-2">Forma de pagamento</h2>
-            <p>À prazo</p>
-            <p><span>180</span>x de R$ <span>3.123</span></p>
+            <p v-if="pedido.parcela > 1">À prazo</p>
+            <p v-if="pedido.parcela == 1">À vista</p>
+            <p>
+              <span>{{ pedido.parcela }}</span
+              >x de <span>{{ pedido.valorParcela }}</span>
+            </p>
           </div>
 
           <div>
@@ -59,10 +70,64 @@
 
 <script lang="ts">
 import Navbar from '@/components/Navbar.vue'
+import { usePedidoStore } from '@/stores/pedido'
+import { getAuth } from 'firebase/auth'
+
 export default {
   name: 'OrderSumary',
   components: {
     Navbar
+  },
+  data() {
+    return {
+      pedido: {
+        imovelID: 'imovelID',
+        imovelName: 'imovelName',
+        imovelAdress: 'imovelAdress',
+        valorFinal: 'valorFinal',
+        comissao: 'comissao',
+        parcela: 'parcela',
+        valorParcela: 'valorParcela',
+        data: 'data',
+        clienteID: 'clienteID',
+        clienteName: 'clienteName',
+        clienteEmail: 'clienteEmail',
+        clienteCPF: 'clienteCPF',
+        clientePhone: 'clientePhone'
+      },
+      email: ''
+    }
+  },
+  methods: {
+    async fetchPedido() {
+      const pedido = await usePedidoStore().getLocalVenda()
+      this.pedido = pedido
+      console.log(this.pedido)
+    },
+    formatPrice(price) {
+      return price.toLocaleString('pt-br', {
+        style: 'currency',
+        currency: 'BRL'
+      })
+    },
+
+    getUserEmail() {
+      const auth = getAuth()
+      const user = auth.currentUser
+      if (user) {
+        this.email = user.email
+        return user.email
+      }
+    },
+
+    transformEmailToName(email) {
+      const name = email.split('@')[0]
+      return name
+    }
+  },
+  mounted() {
+    this.fetchPedido()
+    this.getUserEmail()
   }
 }
 </script>

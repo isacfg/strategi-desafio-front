@@ -72,7 +72,7 @@
                   <input
                     type="number"
                     id="parcelas"
-                    v-model="parcelas"
+                    v-model.number="parcelas"
                     placeholder="150"
                     class="base-input input input-bordered w-full max-lg:mb-2"
                     min="1"
@@ -93,7 +93,7 @@
                   <input
                     type="number"
                     id="desconto"
-                    v-model="desconto"
+                    v-model.number="desconto"
                     placeholder="0"
                     class="base-input input input-bordered w-full max-lg:mb-2"
                     min="0"
@@ -105,7 +105,7 @@
 
             <div class="w-full block">
               <button
-                @click.prevent="toggleCalc"
+                @click.prevent="simularPedido"
                 class="btn mt-8 w-1/3 max-lg:w-full bg-greenish rounded-lg text-white font-medium hover:bg-green-900 hover:scale-105"
               >
                 Simular
@@ -119,7 +119,7 @@
       <div class="w-2/5 flex flex-col gap-y-2 max-lg:w-full max-lg:mt-12 max-lg:px-2">
         <h2 class="text-black text-2xl font-semibold mb-2">Detalhes</h2>
         <div class="flex items-center px-3 py-3 rounded-lg w-full justify-between bg-val">
-          <p class="text-black">Valor total <span class="val-span">(R$)</span></p>
+          <p class="text-black">Valor original <span class="val-span">(R$)</span></p>
           <p class="text-black">{{ formatPrice(novoValor) }}</p>
         </div>
         <div class="flex items-center px-3 py-3 rounded-lg w-full justify-between">
@@ -129,9 +129,21 @@
           </p>
           <p class="text-black">{{ calculateDesconto(novoValor, desconto) }}</p>
         </div>
+        <div
+          v-if="desconto != null && desconto != 0"
+          class="flex items-center px-3 py-3 rounded-lg w-full justify-between"
+        >
+          <p class="text-black">
+            Valor após desconto
+            <span class="val-span">(R$)</span>
+          </p>
+          <p class="text-black">{{ formatPrice(novoValor - (novoValor * desconto) / 100) }}</p>
+        </div>
         <div class="flex items-center px-3 py-3 rounded-lg w-full justify-between">
           <p class="text-black">Comissão <span class="val-span">(5%)</span></p>
-          <p class="text-black">{{ formatPrice(novoValor * 0.05) }}</p>
+          <p class="text-black">
+            {{ formatPrice((novoValor - (novoValor * desconto) / 100) * 0.05) }}
+          </p>
         </div>
 
         <div v-if="isCalc" class="bg-greenish p-8 rounded-3xl mt-8">
@@ -139,7 +151,7 @@
 
           <!-- parcelas -->
           <div class="flex flex-col gap-y-2">
-            <div class="flex items-center w-full justify-between">
+            <div v-if="parcelas > 4" class="flex items-center w-full justify-between">
               <p class="text-white text-lg">
                 <span>{{ parcelas - 3 }}</span> vezes
               </p>
@@ -147,7 +159,7 @@
                 {{ calculateParcelas(novoValor, desconto, parcelas - 3) }}
               </p>
             </div>
-            <div class="flex items-center w-full justify-between">
+            <div v-if="parcelas > 4" class="flex items-center w-full justify-between">
               <p class="text-white text-lg">
                 <span>{{ parcelas - 2 }}</span> vezes
               </p>
@@ -155,7 +167,7 @@
                 {{ calculateParcelas(novoValor, desconto, parcelas - 2) }}
               </p>
             </div>
-            <div class="flex items-center w-full justify-between">
+            <div v-if="parcelas > 4" class="flex items-center w-full justify-between">
               <p class="text-white text-lg">
                 <span>{{ parcelas - 1 }}</span> vezes
               </p>
@@ -171,7 +183,7 @@
                 {{ calculateParcelas(novoValor, desconto, parcelas) }}
               </p>
             </div>
-            <div class="flex items-center w-full justify-between">
+            <div v-if="parcelas < 180" class="flex items-center w-full justify-between">
               <p class="text-white text-lg">
                 <span>{{ parcelas + 1 }}</span> vezes
               </p>
@@ -179,7 +191,7 @@
                 {{ calculateParcelas(novoValor, desconto, parcelas + 1) }}
               </p>
             </div>
-            <div class="flex items-center w-full justify-between">
+            <div v-if="parcelas < 180" class="flex items-center w-full justify-between">
               <p class="text-white text-lg">
                 <span>{{ parcelas + 2 }}</span> vezes
               </p>
@@ -187,7 +199,7 @@
                 {{ calculateParcelas(novoValor, desconto, parcelas + 2) }}
               </p>
             </div>
-            <div class="flex items-center w-full justify-between">
+            <div v-if="parcelas < 180" class="flex items-center w-full justify-between">
               <p class="text-white text-lg">
                 <span>{{ parcelas + 3 }}</span> vezes
               </p>
@@ -197,11 +209,13 @@
             </div>
           </div>
 
-          <button
+          <RouterLink
+            @click="simularPedido"
+            to="/select-client"
             class="btn mt-8 w-full bg-white rounded-full text-black font-medium hover:bg-white hover:scale-105"
           >
             Prosseguir
-          </button>
+          </RouterLink>
         </div>
       </div>
     </div>
@@ -213,6 +227,9 @@ import Navbar from '@/components/Navbar.vue'
 import CategoriaSelect from '@/components/CategoriaSelect.vue'
 import ImovelCard from '@/components/ImovelCard.vue'
 import { useImoveisStore } from '@/stores/imoveis'
+import { usePedidoStore } from '@/stores/pedido'
+
+import { Timestamp } from 'firebase/firestore'
 
 export default {
   name: 'HomeView',
@@ -241,6 +258,14 @@ export default {
       comissao: 0,
       novoValor: 0,
       error: ''
+    }
+  },
+  watch: {
+    desconto(value) {
+      this.desconto = Math.min(Math.max(value, 0), 100)
+    },
+    parcelas(value) {
+      this.parcelas = Math.min(Math.max(value, 1), 180)
     }
   },
   methods: {
@@ -274,14 +299,26 @@ export default {
     },
 
     calculateComissao(price: number, desconto: number): string {
+      if (desconto == null) desconto = 0
       const precoComDesconto = price - price * (desconto / 100)
       return `Comissão: ${this.formatPrice(precoComDesconto * 0.05)}`
     },
 
-    toggleCalc() {
+    simularPedido() {
       if (this.parcelas > 0) {
         this.isCalc = true
         this.error = ''
+
+        usePedidoStore().setLocalVenda(
+          this.imovel.id,
+          this.imovel.nome,
+          this.imovel.adress,
+          this.novoValor,
+          this.calculateComissao(this.novoValor, this.desconto),
+          this.parcelas,
+          this.calculateParcelas(this.novoValor, this.desconto, this.parcelas),
+          Timestamp.now()
+        )
       } else {
         this.error = 'Insira um valor para parcelas'
       }

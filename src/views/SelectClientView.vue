@@ -1,6 +1,9 @@
 <template>
   <Navbar>
-    <h1 class="text-black text-4xl font-bold mt-20 mb-8 px-4">Gerenciar Clientes</h1>
+    <div class="mt-20 mb-8">
+      <h1 class="text-black text-4xl font-bold px-4">Selecionar Cliente</h1>
+      <p class="text-black px-4">Clique em um cliente para continuar a venda</p>
+    </div>
 
     <!-- filtro + botao add -->
     <div class="flex justify-between px-4 max-lg:flex-col max-lg:gap-y-4">
@@ -52,14 +55,16 @@
         <div class="w-1/4 text-black font-semibold">
           <p class="max-md:text-sm">CPF e Primeiro cadastro</p>
         </div>
-        <div class="w-auto"></div>
       </div>
 
       <!-- row body -->
       <div
         v-for="cliente in clientes"
         :key="cliente.id"
-        class="flex tab-child transition-custom items-center p-4 max-sm:gap-x-2 justify-between"
+        @click="
+          setClienteToState(cliente.id, cliente.nome, cliente.email, cliente.cpf, cliente.telefone)
+        "
+        class="flex tab-child transition-custom items-center p-4 max-sm:gap-x-2 cursor-pointer justify-between"
       >
         <div class="flex items-center w-1/4 overflow-hidden text-black gap-x-2">
           <img class="hide-on-mobile-500" src="../assets/placeholder-imgs.png" alt="" srcset="" />
@@ -74,55 +79,6 @@
           <p class="max-sm:text-xs">
             {{ cliente.cpf + '  e  ' + convertTimestampToDate(cliente.dataCadastro) }}
           </p>
-        </div>
-
-        <div class="w-auto text-black justify-end">
-          <div class="dropdown px-4 dropdown-bottom dropdown-end">
-            <label tabindex="0" class="">
-              <img class="cursor-pointer" src="../assets/icons-cards/3dots.svg" alt="" srcset=""
-            /></label>
-            <ul
-              tabindex="0"
-              class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-2xl w-52"
-            >
-              <li
-                @click="
-                  selectCliente({
-                    id: cliente.id,
-                    nome: cliente.nome,
-                    email: cliente.email,
-                    cpf: cliente.cpf,
-                    telefone: cliente.telefone
-                  })
-                "
-                onclick="verCliente.showModal()"
-                class="p-2 transition-custon rounded-lg mb-2"
-              >
-                Ver mais
-              </li>
-              <li
-                @click="
-                  selectCliente({
-                    id: cliente.id,
-                    nome: cliente.nome,
-                    email: cliente.email,
-                    cpf: cliente.cpf,
-                    telefone: cliente.telefone
-                  })
-                "
-                onclick="editCliente.showModal()"
-                class="p-2 transition-custon rounded-lg mb-2"
-              >
-                Editar
-              </li>
-              <li
-                @click="deleteCliente(cliente)"
-                class="p-2 rounded-lg hover:bg-red-600 hover:text-white"
-              >
-                Remover
-              </li>
-            </ul>
-          </div>
         </div>
       </div>
     </div>
@@ -292,6 +248,16 @@
         </div>
       </div>
     </dialog>
+
+    <!-- toasts -->
+    <div class="toast toast-end">
+      <div v-if="hasError" class="alert alert-danger bg-red-600 text-white">
+        <span>{{ toastError }}</span>
+      </div>
+      <div v-if="hasSucess" class="alert alert-success bg-greenish text-white">
+        <span>{{ toastSuccess }}</span>
+      </div>
+    </div>
   </Navbar>
 </template>
 
@@ -301,8 +267,10 @@ import { Timestamp } from 'firebase/firestore'
 import { useClientesStore } from '@/stores/clientes'
 import { mask } from 'vue-the-mask'
 
+import { usePedidoStore } from '@/stores/pedido'
+
 export default {
-  name: 'ClienteView',
+  name: 'SelectClientView',
   components: {
     Navbar
   },
@@ -324,7 +292,10 @@ export default {
       clientTelefone: '',
 
       error: '',
-      topAviso: false,
+      toastError: '',
+      toastSuccess: '',
+      hasError: false,
+      hasSucess: false,
 
       selectedCliente: {
         id: '',
@@ -345,6 +316,18 @@ export default {
       this.getClientesByCpf().then((res) => {
         this.clientes = res
       })
+    },
+
+    setClienteToState(id, nome, email, cpf, telefone) {
+      let res = usePedidoStore().setLocalCliente(id, nome, email, cpf, telefone)
+
+      this.toastSuccess = 'Cliente selecionado com sucesso'
+      this.hasSucess = true
+      setTimeout(() => {
+        this.toastSuccess = ''
+        this.hasSucess = false
+        this.$router.push('/resumo')
+      }, 500)
     },
 
     // convert timestamp do firebase to date
@@ -381,6 +364,13 @@ export default {
         })
 
         editCliente.close()
+
+        this.toastSuccess = 'Cliente editado com sucesso'
+        this.hasSucess = true
+        setTimeout(() => {
+          this.toastSuccess = ''
+          this.hasSucess = false
+        }, 2000)
 
         return 'Cliente editado com sucesso'
       } catch (error) {

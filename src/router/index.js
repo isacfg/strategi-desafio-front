@@ -32,7 +32,6 @@ const router = createRouter({
       name: 'login',
       component: () => import('../views/LoginView.vue')
     },
-
     {
       path: '/simulacao/:id',
       name: 'simulacao',
@@ -46,8 +45,14 @@ const router = createRouter({
       component: () => import('../views/ClientView.vue')
     },
     {
+      path: '/select-client',
+      name: 'select-client',
+      beforeEnter: isAuthenticated,
+      component: () => import('../views/SelectClientView.vue')
+    },
+    {
       // resumo do pedido
-      path: '/resumo',
+      path: '/resumo/',
       name: 'resumo',
       beforeEnter: isAuthenticated,
       component: () => import('../views/OrderSummaryView.vue')
