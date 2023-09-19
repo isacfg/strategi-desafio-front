@@ -7,6 +7,14 @@
 
 ---
 
+## Demo
+
+- [https://strategi-desafio-front.vercel.app/](https://strategi-desafio-front.vercel.app/)
+- Email: strategi@email.com
+- Senha: 123456
+
+---
+
 ## Tecnologias
 
 - [Vue.js](https://vuejs.org/)
