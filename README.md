@@ -1,14 +1,41 @@
-# strategi-desafio-front
+# Desafio técnico Front Strategi:
 
-Desafio strategi front-end
+<!-- logo.png -->
+<div style="display: flex; width: 100%; justify-content:center;">
+  <img style="width:300px; height: 300px; object-fit:contain;" alt="login-page" title="login-page" src="logo.png" />
+</div>
 
-- colocar fotos
-- tech: typescript vue figma daisyui tailwindcss firebase
-- link hosted
-- demo video
-- link github
-- footer
-- credenciais de login
+---
+
+## Tecnologias
+
+- [Vue.js](https://vuejs.org/)
+- [Pinia](https://pinia.esm.dev/)
+- [Tailwindcss](https://tailwindcss.com/)
+- [Vite](https://vitejs.dev/)
+- [DaisyUI](https://daisyui.com/)
+- [Firebase](https://firebase.google.com/)
+
+---
+
+### Features Feitas
+
+- [x] Login do usuário(
+      Email: strategi@email.com
+      Senha: 123456
+      ).
+- [x] Cadastro de Cliente.
+- [x] Edição do cadastro de cliente.
+- [x] Excluir cadastro do cliente.
+- [x] Consultar clientes.
+- [x] Consultar imóveis.
+- [x] Cadastro de vendas.
+
+---
+
+## Requisitos
+
+- [Node.js](https://nodejs.org/en/) >= 18.17.1
 
 ## Project Setup
 
@@ -16,20 +43,14 @@ Desafio strategi front-end
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### Hot-Reload for Development
 
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+### Compile and Minify for Production
 
 ```sh
 npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
 ```
