@@ -43,14 +43,14 @@
       <!-- row header -->
       <div class="flex items-center gray p-4 row-header justify-between max-md:p-2">
         <div class="w-1/4 text-black font-semibold">
-          <p class="max-md:text-sm">Cliente</p>
+          <p class="max-md:text-xs">Cliente</p>
         </div>
 
         <div class="w-1/4 text-black font-semibold">
-          <p class="max-md:text-sm">Contato</p>
+          <p class="max-md:text-xs">Contato</p>
         </div>
         <div class="w-1/4 text-black font-semibold">
-          <p class="max-md:text-sm">CPF e Primeiro cadastro</p>
+          <p class="max-md:text-xs">CPF e Primeiro cadastro</p>
         </div>
         <div class="w-auto"></div>
       </div>
@@ -96,7 +96,7 @@
                   })
                 "
                 onclick="verCliente.showModal()"
-                class="p-2 transition-custon rounded-lg mb-2"
+                class="p-2 transition-custon rounded-lg mb-2 cursor-pointer"
               >
                 Ver mais
               </li>
@@ -111,13 +111,13 @@
                   })
                 "
                 onclick="editCliente.showModal()"
-                class="p-2 transition-custon rounded-lg mb-2"
+                class="p-2 transition-custon rounded-lg mb-2 cursor-pointer"
               >
                 Editar
               </li>
               <li
                 @click="deleteCliente(cliente)"
-                class="p-2 rounded-lg hover:bg-red-600 hover:text-white"
+                class="p-2 rounded-lg hover:bg-red-600 hover:text-white cursor-pointer"
               >
                 Remover
               </li>
@@ -292,6 +292,15 @@
         </div>
       </div>
     </dialog>
+    <!-- toasts -->
+    <div class="toast toast-end">
+      <div v-if="hasError" class="alert alert-danger bg-red-600 text-white">
+        <span>{{ toastError }}</span>
+      </div>
+      <div v-if="hasSucess" class="alert alert-success bg-greenish text-white">
+        <span>{{ toastSuccess }}</span>
+      </div>
+    </div>
   </Navbar>
 </template>
 
@@ -324,7 +333,10 @@ export default {
       clientTelefone: '',
 
       error: '',
-      topAviso: false,
+      toastError: '',
+      toastSuccess: '',
+      hasError: false,
+      hasSucess: false,
 
       selectedCliente: {
         id: '',
@@ -366,26 +378,49 @@ export default {
         return
       }
 
+      // if cpf não for valido e number
+      // if (this.selectedCliente.cpf.length != 11 || isNaN(this.selectedCliente.cpf)) {
+      //   this.error = 'CPF inválido'
+      //   return
+      // }
+
       try {
         // let res = await useClientesStore().editCliente(this.selectedCliente)
         // this.getClientes().then((res) => {
         //   this.clientes = res
         // })
 
-        this.selectedCliente.cpf = this.selectedCliente.cpf.replace(/\D/g, '')
+        // this.selectedCliente.cpf = this.selectedCliente.cpf.replace(/\D/g, '')
         // convert to number
-        this.selectedCliente.cpf = Number(this.selectedCliente.cpf)
-        await useClientesStore().editCliente(this.selectedCliente)
+        // this.selectedCliente.cpf = Number(this.selectedCliente.cpf)
+        let res = await useClientesStore().editCliente(this.selectedCliente)
+        if (res == false) {
+          this.error = 'CPF já cadastrado'
+          return
+        }
         this.getClientes().then((res) => {
           this.clientes = res
         })
 
         editCliente.close()
+        this.toastSuccess = 'Cliente editado com sucesso'
+        this.hasSucess = true
+        setTimeout(() => {
+          this.toastSuccess = ''
+          this.hasSucess = false
+        }, 2000)
 
         return 'Cliente editado com sucesso'
       } catch (error) {
         console.log(error)
         this.error = error
+
+        this.toastError = 'Erro ao editar cliente'
+        this.hasError = true
+        setTimeout(() => {
+          this.toastError = ''
+          this.hasError = false
+        }, 2000)
       }
     },
 

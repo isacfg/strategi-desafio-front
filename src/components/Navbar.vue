@@ -53,7 +53,7 @@
             <li>
               <RouterLink
                 class="font-poppins menu-item-p text-base text-black font-medium capitalize hover:text-greenish hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:text-greenish active:text-greenish"
-                to="/pedidos"
+                to="/vendas"
                 >Vendas</RouterLink
               >
             </li>
@@ -61,7 +61,7 @@
         </div>
       </div>
       <!-- Page content here -->
-      <div class="mx-auto container mb-12 px-24 max-lg:px-4">
+      <div class="mx-auto container mb-12 px-24 max-lg:px-4 h-min-screen">
         <slot class=""> </slot>
       </div>
       <Footer class="mb-6" />
@@ -94,7 +94,7 @@
         <li>
           <RouterLink
             class="font-poppins text-lg text-white font-semibold capitalize hover:text-white hover:border-none hover:bg-transparent focus:bg-transparent active:bg-transparent menu-item-p focus:text-white active:text-white"
-            to="/pedidos"
+            to="/vendas"
             >Vendas</RouterLink
           >
         </li>
@@ -119,6 +119,10 @@ export default {
 <style scoped>
 .logo {
   height: 30px;
+}
+
+.h-min-screen {
+  min-height: calc(100vh - 100px);
 }
 
 .menu-item-p:active {

@@ -7,7 +7,7 @@
         <div class="bottom-row flex flex-row gap-x-12 w-full">
           <div>
             <h2 class="text-xl font-semibold mb-2">Vendedor</h2>
-            <p>{{ transformEmailToName(email) }}</p>
+            <p v-if="user.length > 0">{{ user[0].nome }}</p>
             <p>{{ email }}</p>
           </div>
 
@@ -36,7 +36,7 @@
 
           <div>
             <img
-              class="rounded-lg w-full object-cover"
+              class="imovelPhoto rounded-lg w-full object-cover"
               :src="`/imoveis/${pedido.imovelID}.jpg`"
               alt=""
               srcset=""
@@ -57,12 +57,23 @@
 
           <div>
             <button
+              @click="addVenda"
               class="btn w-full bg-greenish rounded-lg text-white font-medium hover:bg-green-900 hover:scale-105"
             >
               Finalizar Venda
             </button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- toasts -->
+    <div class="toast toast-end">
+      <div v-if="hasError" class="alert alert-danger bg-red-600 text-white">
+        <span>{{ toastError }}</span>
+      </div>
+      <div v-if="hasSucess" class="alert alert-success bg-greenish text-white">
+        <span>{{ toastSuccess }}</span>
       </div>
     </div>
   </Navbar>
@@ -95,7 +106,12 @@ export default {
         clienteCPF: 'clienteCPF',
         clientePhone: 'clientePhone'
       },
-      email: ''
+      email: '',
+      toastError: '',
+      toastSuccess: '',
+      hasError: false,
+      hasSucess: false,
+      user: []
     }
   },
   methods: {
@@ -103,6 +119,11 @@ export default {
       const pedido = await usePedidoStore().getLocalVenda()
       this.pedido = pedido
       console.log(this.pedido)
+    },
+    async fetchUser() {
+      const pedidoStore = usePedidoStore()
+      let res = await pedidoStore.getUserFromDB()
+      this.user = res
     },
     formatPrice(price) {
       return price.toLocaleString('pt-br', {
@@ -123,10 +144,26 @@ export default {
     transformEmailToName(email) {
       const name = email.split('@')[0]
       return name
+    },
+
+    async addVenda() {
+      if (this.pedido.imovelID != 'imovelID') {
+        await usePedidoStore().addVendaToDB(this.email)
+        await usePedidoStore().clearLocalVenda()
+
+        this.toastSuccess = 'Venda finalizada com sucesso!'
+        this.hasSucess = true
+        setTimeout(() => {
+          this.toastSuccess = ''
+          this.hasSucess = false
+          this.$router.push('/vendas')
+        }, 500)
+      }
     }
   },
   mounted() {
     this.fetchPedido()
+    this.fetchUser()
     this.getUserEmail()
   }
 }
@@ -136,6 +173,12 @@ export default {
 .receipt {
   border: 2px solid #e0e7eb;
   border-radius: 15px;
+}
+
+.imovelPhoto {
+  height: 200px;
+  width: 100%;
+  object-fit: cover;
 }
 
 .bottom-row {

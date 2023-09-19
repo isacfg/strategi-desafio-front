@@ -1,6 +1,9 @@
 // stores/counter.js
 import { defineStore } from 'pinia'
-import { collection, getFirestore, getDocs, query, limit, where, orderBy } from 'firebase/firestore'
+import {
+  collection, getFirestore, getDocs, query, limit, where, orderBy, addDoc,
+  deleteDoc,
+} from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
 
@@ -39,11 +42,26 @@ export const usePedidoStore = defineStore('pedido', {
         clienteCPF: 'clienteCPF',
         clientePhone: 'clientePhone',
       }
-    ]
+    ],
+    vendasList: [],
+    user: []
   }),
   actions: {
     getLocalVenda() {
       return this.venda[0]
+    },
+    async getUserFromDB() {
+      const q = query(collection(db, 'users'))
+      const querySnapshot = await getDocs(q)
+      const usersList = []
+      querySnapshot.forEach((doc) => {
+        // clientesList.push(doc.data())
+        usersList.push({ id: doc.id, ...doc.data() })
+      }
+      )
+      this.user = usersList
+      return this.user
+
     },
     setLocalVenda(
       imovelid,
@@ -84,6 +102,58 @@ export const usePedidoStore = defineStore('pedido', {
       } else {
         return false
       }
+    },
+
+    async addVendaToDB(vendedorEmail) {
+      const docRef = await addDoc(collection(db, 'vendas'), {
+        imovelID: this.venda[0].imovelID,
+        imovelName: this.venda[0].imovelName,
+        imovelAdress: this.venda[0].imovelAdress,
+        valorFinal: this.venda[0].valorFinal,
+        comissao: this.venda[0].comissao,
+        parcela: this.venda[0].parcela,
+        valorParcela: this.venda[0].valorParcela,
+        data: this.venda[0].data,
+        clienteID: this.venda[0].clienteID,
+        clienteName: this.venda[0].clienteName,
+        clienteEmail: this.venda[0].clienteEmail,
+        clienteCPF: this.venda[0].clienteCPF,
+        clientePhone: this.venda[0].clientePhone,
+        vendedorEmail: vendedorEmail,
+      })
+      console.log('Document written with ID: ', docRef.id)
+    },
+
+    async getVendas() {
+      try {
+        const q = query(collection(db, 'vendas'))
+        const querySnapshot = await getDocs(q)
+        const vendasList = []
+        querySnapshot.forEach((doc) => {
+          // clientesList.push(doc.data())
+          vendasList.push({ id: doc.id, ...doc.data() })
+        })
+        this.vendasList = vendasList
+        return this.vendasList
+      } catch (e) {
+        console.error(e)
+      }
+    },
+
+    clearLocalVenda() {
+      this.venda[0].imovelID = ''
+      this.venda[0].imovelName = ''
+      this.venda[0].imovelAdress = ''
+      this.venda[0].valorFinal = ''
+      this.venda[0].comissao = ''
+      this.venda[0].parcela = ''
+      this.venda[0].valorParcela = ''
+      this.venda[0].data = ''
+      this.venda[0].clienteID = ''
+      this.venda[0].clienteName = ''
+      this.venda[0].clienteEmail = ''
+      this.venda[0].clienteCPF = ''
+      this.venda[0].clientePhone = ''
     },
   },
 })

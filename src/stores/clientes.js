@@ -57,7 +57,8 @@ export const useClientesStore = defineStore('clientes', {
         dataCadastro: '',
         foto: ''
       }
-    ]
+    ],
+
   }),
   actions: {
     // pegar clientes do db 9 a cada vez
@@ -70,6 +71,8 @@ export const useClientesStore = defineStore('clientes', {
     returnClientes() {
       return this.clientesList
     },
+
+
 
     async getClientesFromDB(count) {
       try {
@@ -137,6 +140,7 @@ export const useClientesStore = defineStore('clientes', {
     async editCliente(cliente) {
 
       try {
+        // console.log('cliente: ' + cliente.cpf)
         const q = query(collection(db, 'clientes'), where('cpf', '==', cliente.cpf))
         const querySnapshot = await getDocs(q)
         const clientesList = []
@@ -144,6 +148,7 @@ export const useClientesStore = defineStore('clientes', {
           // clientesList.push(doc.data())
           clientesList.push({ id: doc.id, ...doc.data() })
         })
+        // console.log('clientesList' + clientesList)
         if (clientesList.length > 0) {
           return false
         } else {

@@ -58,8 +58,8 @@ const router = createRouter({
       component: () => import('../views/OrderSummaryView.vue')
     },
     {
-      path: '/pedidos',
-      name: 'pedidos',
+      path: '/vendas',
+      name: 'vendas',
       beforeEnter: isAuthenticated,
       component: () => import('../views/OrderListView.vue')
     }
