@@ -7,7 +7,7 @@
         @mouseover="hovering = true"
         @mouseout="hovering = false"
       /> -->
-      <img class="card-img rounded-lg" :src="imovel.img" alt="" srcset="" />
+      <img loading="lazy" class="card-img rounded-lg" :src="imovel.img" alt="" srcset="" />
     </figure>
     <div class="card-body max-md:px-1 cursor-pointer">
       <div class="badge badge-ghost p-3 rounded-full">{{ imovel.categoria }}</div>
