@@ -7,15 +7,15 @@
       <CategoriaSelect
         type="apartment"
         name="Apartamento"
-        @categoria-select="handleCategoriaSelect"
+        @categoria-select=""
       />
-      <CategoriaSelect type="Castle" name="Castelo" @categoria-select="handleCategoriaSelect" />
-      <CategoriaSelect type="Farm" name="Rural" @categoria-select="handleCategoriaSelect" />
-      <CategoriaSelect type="Campervan" name="Trailers" @categoria-select="handleCategoriaSelect" />
-      <CategoriaSelect type="Hotel" name="Hotel" @categoria-select="handleCategoriaSelect" />
-      <CategoriaSelect type="House" name="Casa" @categoria-select="handleCategoriaSelect" />
-      <CategoriaSelect type="Tent" name="Ar livre" @categoria-select="handleCategoriaSelect" />
-      <CategoriaSelect type="Tiny home" name="Kitnet" @categoria-select="handleCategoriaSelect" />
+      <CategoriaSelect type="Castle" name="Castelo" @categoria-select="" />
+      <CategoriaSelect type="Farm" name="Rural" @categoria-select="" />
+      <CategoriaSelect type="Campervan" name="Trailers" @categoria-select="" />
+      <CategoriaSelect type="Hotel" name="Hotel" @categoria-select="" />
+      <CategoriaSelect type="House" name="Casa" @categoria-select="" />
+      <CategoriaSelect type="Tent" name="Ar livre" @categoria-select="" />
+      <CategoriaSelect type="Tiny home" name="Kitnet" @categoria-select="" />
     </div>
 
     <!-- filter and serach -->
@@ -43,7 +43,7 @@
       </select>
 
       <button
-        @click="handleSearch"
+        @click=""
         class="btn-busca btn bg-greenish text-white font-medium max-md:w-full hover:bg-green-900"
       >
         Buscar
@@ -60,7 +60,7 @@
 
     <!-- ver mais imoveis -->
     <div class="flex items-center justify-center mt-12">
-      <button @click="verMais" class="btn rounded-lg bg-greenish text-white hover:bg-emerald-700">
+      <button @click="" class="btn rounded-lg bg-greenish text-white hover:bg-emerald-700">
         Ver mais imóveis
       </button>
     </div>
@@ -72,7 +72,7 @@ import Navbar from '@/components/Navbar.vue'
 import CategoriaSelect from '@/components/CategoriaSelect.vue'
 import ImovelCard from '@/components/ImovelCard.vue'
 
-import { useImoveisStore } from '@/stores/imoveis'
+// import { useImoveisStore } from '@/stores/imoveis'
 
 export default {
   name: 'HomeView',
@@ -91,79 +91,79 @@ export default {
     }
   },
 
-  methods: {
-    verMais() {
-      this.shown += 9
-      this.getImoveis().then((res) => {
-        this.imoveis = res
-      })
-    },
-    handleCategoriaSelect(category: string) {
-      console.log(`Categoria selecionada: ${category}`)
-      this.getImoveisByCategory(category).then((res) => {
-        this.imoveis = res
-      })
-    },
+  // methods: {
+  //   verMais() {
+  //     this.shown += 9
+  //     this.getImoveis().then((res) => {
+  //       this.imoveis = res
+  //     })
+  //   },
+  //   handleCategoriaSelect(category: string) {
+  //     console.log(`Categoria selecionada: ${category}`)
+  //     this.getImoveisByCategory(category).then((res) => {
+  //       this.imoveis = res
+  //     })
+  //   },
 
-    // gerenciador de busca (quando aperta o botao)
-    handleSearch() {
-      console.log('price order' + this.priceOrder)
-      console.log('search' + this.search)
-      this.shown = 9
-      if (this.search === '' && this.priceOrder === '') {
-        console.log('campos vazios')
-        this.getImoveis().then((res) => {
-          this.imoveis = res
-        })
-      } else if (this.search !== '' && this.priceOrder === '') {
-        console.log('buscar por nome')
-        this.getImoveisBySearch(this.search).then((res) => {
-          this.imoveis = res
-        })
-      } else if (this.search === '' && this.priceOrder !== '') {
-        console.log('ordenar por preço')
-        this.sortImoveisByPrice(this.priceOrder).then((res) => {
-          this.imoveis = res
-        })
-      } else if (this.search !== '' && this.priceOrder !== '') {
-        console.log('buscar por nome e ordenar por preço')
-        this.getImoveisBySearchAndPrice(this.search, this.priceOrder).then((res) => {
-          this.imoveis = res
-        })
-      }
+  //   // gerenciador de busca (quando aperta o botao)
+  //   handleSearch() {
+  //     console.log('price order' + this.priceOrder)
+  //     console.log('search' + this.search)
+  //     this.shown = 9
+  //     if (this.search === '' && this.priceOrder === '') {
+  //       console.log('campos vazios')
+  //       this.getImoveis().then((res) => {
+  //         this.imoveis = res
+  //       })
+  //     } else if (this.search !== '' && this.priceOrder === '') {
+  //       console.log('buscar por nome')
+  //       this.getImoveisBySearch(this.search).then((res) => {
+  //         this.imoveis = res
+  //       })
+  //     } else if (this.search === '' && this.priceOrder !== '') {
+  //       console.log('ordenar por preço')
+  //       this.sortImoveisByPrice(this.priceOrder).then((res) => {
+  //         this.imoveis = res
+  //       })
+  //     } else if (this.search !== '' && this.priceOrder !== '') {
+  //       console.log('buscar por nome e ordenar por preço')
+  //       this.getImoveisBySearchAndPrice(this.search, this.priceOrder).then((res) => {
+  //         this.imoveis = res
+  //       })
+  //     }
 
-      this.search = ''
-      this.priceOrder = ''
-    },
+  //     this.search = ''
+  //     this.priceOrder = ''
+  //   },
 
-    async getImoveis() {
-      let c = await useImoveisStore().getImoveisFromDB(this.shown)
-      return c
-    },
-    async getImoveisByCategory(category: string) {
-      let c = await useImoveisStore().getImoveisByCategory(category)
-      return c
-    },
-    async sortImoveisByPrice(order: string) {
-      let c = await useImoveisStore().sortImoveisByPrice(order)
-      return c
-    },
-    async getImoveisBySearch(search: string) {
-      let c = await useImoveisStore().getImoveisByName(search)
-      return c
-    },
-    async getImoveisBySearchAndPrice(search: string, order: string) {
-      let c = await useImoveisStore().getImoveisByName(search)
-      return c
-    }
-  },
+  //   async getImoveis() {
+  //     let c = await useImoveisStore().getImoveisFromDB(this.shown)
+  //     return c
+  //   },
+  //   async getImoveisByCategory(category: string) {
+  //     let c = await useImoveisStore().getImoveisByCategory(category)
+  //     return c
+  //   },
+  //   async sortImoveisByPrice(order: string) {
+  //     let c = await useImoveisStore().sortImoveisByPrice(order)
+  //     return c
+  //   },
+  //   async getImoveisBySearch(search: string) {
+  //     let c = await useImoveisStore().getImoveisByName(search)
+  //     return c
+  //   },
+  //   async getImoveisBySearchAndPrice(search: string, order: string) {
+  //     let c = await useImoveisStore().getImoveisByName(search)
+  //     return c
+  //   }
+  // },
 
   mounted() {
-    this.getImoveis().then((res) => {
-      this.imoveis = res
-      console.log(this.imoveis)
-      this.loading = false
-    })
+    // this.getImoveis().then((res) => {
+    //   this.imoveis = res
+    //   console.log(this.imoveis)
+    //   this.loading = false
+    // })
   }
 }
 </script>

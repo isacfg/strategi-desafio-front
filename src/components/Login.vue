@@ -71,7 +71,7 @@
 </template>
 
 <script lang="ts">
-import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+// import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { RouterLink } from 'vue-router'
 import { useRouter } from 'vue-router'
 
@@ -87,38 +87,38 @@ export default {
   },
   methods: {
     async login() {
-      const auth = getAuth()
-      try {
-        const user = await signInWithEmailAndPassword(auth, this.email, this.password)
-        this.isLogged = true
-        console.log(user)
-        this.$router.push('/')
-      } catch (error) {
-        this.error = error.message
-      }
+      // const auth = getAuth()
+      // try {
+      //   const user = await signInWithEmailAndPassword(auth, this.email, this.password)
+      //   this.isLogged = true
+      //   console.log(user)
+      //   this.$router.push('/')
+      // } catch (error) {
+      //   this.error = error.message
+      // }
     },
 
     async logout() {
-      const auth = getAuth()
-      try {
-        await auth.signOut()
-        this.isLogged = false
-        this.$router.push('/login')
-      } catch (error) {
-        console.log(error)
-      }
+      // const auth = getAuth()
+      // try {
+      //   await auth.signOut()
+      //   this.isLogged = false
+      //   this.$router.push('/login')
+      // } catch (error) {
+      //   console.log(error)
+      // }
     }
   },
 
   mounted() {
-    const auth = getAuth()
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        this.isLogged = true
-      } else {
-        this.isLogged = false
-      }
-    })
+    // const auth = getAuth()
+    // auth.onAuthStateChanged((user) => {
+    //   if (user) {
+    //     this.isLogged = true
+    //   } else {
+    //     this.isLogged = false
+    //   }
+    // })
   }
 }
 </script>
