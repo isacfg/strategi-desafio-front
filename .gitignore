@@ -17,6 +17,8 @@ coverage
 /cypress/videos/
 /cypress/screenshots/
 
+/pocketbase/pb_data/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
