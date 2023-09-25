@@ -65,20 +65,23 @@
     <div class="mt-20">
       <p>LOGIN PARA A DEMO</p>
       <p>Email: strategi@email.com</p>
-      <p>Senha: 123456</p>
+      <p>Senha: 12345678</p>
     </div>
   </div>
 </template>
 
-<script lang="ts">
+<script >
 // import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { RouterLink } from 'vue-router'
 import { useRouter } from 'vue-router'
+import PocketBase from 'pocketbase';
+
 
 export default {
   name: 'Login',
   data() {
     return {
+      pb: null,
       email: '',
       password: '',
       error: '',
@@ -96,6 +99,24 @@ export default {
       // } catch (error) {
       //   this.error = error.message
       // }
+      
+
+      try {
+        const authData = await this.pb.collection('users').authWithPassword(
+          this.email,
+          this.password
+        );
+
+        this.isLogged = true
+
+        // after the above you can also access the auth data from the authStore
+        console.log(this.pb.authStore)
+        console.log(this.pb.authStore.isValid);
+        console.log(this.pb.authStore.token);
+        console.log(this.pb.authStore.model.id);
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     async logout() {
@@ -107,10 +128,13 @@ export default {
       // } catch (error) {
       //   console.log(error)
       // }
+
+      
     }
   },
 
   mounted() {
+    this.pb = new PocketBase('http://127.0.0.1:8090');
     // const auth = getAuth()
     // auth.onAuthStateChanged((user) => {
     //   if (user) {
