@@ -1,3 +1,10 @@
+## v0.18.9
+
+- Fixed empty thumbs directories not getting deleted on Windows after deleting a record img file ([#3382](https://github.com/pocketbase/pocketbase/issues/3382)).
+
+- Updated the generated JSVM typings to silent the TS warnings when trying to access a field/method in a Go->TS interface.
+
+
 ## v0.18.8
 
 - Minor fix for the View collections API Preview and Admin UI listings incorrectly showing the `created` and `updated` fields as `N/A` when the view query doesn't have them.
